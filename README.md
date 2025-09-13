@@ -1,23 +1,23 @@
 # amala-atlas
 
-amala-atlas is an open-source platform designed to help users discover, track, and share their favorite amala spots.  
+amala-atlas (Amala at last) is an open-source platform designed to help users discover, track, and share their favorite amala spots.  
 It provides an API backend and extensible features to support food discovery, ratings, and more.  
 
 ## Features
 
-- RESTful API for managing amala spots and reviews
-- User authentication and profile management
+- RESTful API for managing Amala spots and reviews
 - Easy integration with third-party clients
 - Extensible backend for new features
-- [Add more features here]
+- An installable web application(PWA) on any platform, web, mobile, Android, IOS.
+- Clean and intuitive User interface for users
+- AI-powered search and verification
+- AI chatbot to find Amala spots around
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (vXX or later)
-- [PostgreSQL](https://www.postgresql.org/) (if applicable)
-- [Other dependencies]
+- [Node.js](https://nodejs.org/) (v20 or later)
 
 ### Installation
 
@@ -31,6 +31,9 @@ cd amala-atlas
 Install dependencies:
 
 ```bash
+# Using pnpm
+pnpm install
+
 # Using npm
 npm install
 
@@ -43,12 +46,14 @@ yarn install
 Start the backend server:
 
 ```bash
-npm start
+pnpm dev
+# or 
+npm run dev
 # or
-yarn start
+yarn dev
 ```
 
-The API server will run on [http://localhost:PORT](http://localhost:PORT) by default.
+The API server will run on [http://localhost:3000](http://localhost:3000) by default.
 
 ### Configuration
 
@@ -74,3 +79,6 @@ This project is licensed under the [MIT License](LICENSE).
 ---
 
 For questions, suggestions, or bug reports, please open an issue or contact the maintainers.
+
+Thank you :)
+
