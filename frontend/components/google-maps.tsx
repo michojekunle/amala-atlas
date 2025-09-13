@@ -49,155 +49,304 @@ export function GoogleMaps({
   const [map, setMap] = useState<any>(null)
   const [markers, setMarkers] = useState<any[]>([])
   const [markerCluster, setMarkerCluster] = useState<any>(null)
-  const [selectedSpot, setSelectedSpot] = useState<any>(null);
+  const [selectedSpot, setSelectedSpot] = useState<any>(null)
   const [infoWindow, setInfoWindow] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // Check if Google Maps API key is available
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+      setError("Google Maps API key is missing")
+      setIsLoading(false)
+      return
+    }
+  }, [])
 
   useEffect(() => {
     const loadGoogleMaps = () => {
-      if (window.google) {
+      // If Google Maps is already loaded
+      if (window.google && window.google.maps) {
+        console.log("Google Maps already loaded")
         initializeMap()
         return
       }
 
+      // Check if script is already being loaded
+      const existingScript = document.querySelector('script[src*="maps.googleapis.com"]')
+      if (existingScript) {
+        console.log("Google Maps script already exists, waiting for load...")
+        existingScript.addEventListener('load', initializeMap)
+        return
+      }
+
+      console.log("Loading Google Maps script...")
       const script = document.createElement("script")
       script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=geometry,places&callback=initMap`
       script.async = true
       script.defer = true
+
+      script.onerror = () => {
+        console.error("Failed to load Google Maps script")
+        setError("Failed to load Google Maps")
+        setIsLoading(false)
+      }
 
       window.initMap = initializeMap
       document.head.appendChild(script)
     }
 
     loadGoogleMaps()
+
+    // Cleanup function
+    return () => {
+      if (window.initMap) {
+        delete window?.initMap
+      }
+    }
   }, [])
 
   useEffect(() => {
+    console.log("Map or spots changed:", { map: !!map, spotsCount: spots.length })
     if (map && spots.length > 0) {
       updateMarkers()
+    } else if (map && spots.length === 0) {
+      // Clear existing markers if no spots
+      clearMarkers()
     }
   }, [map, spots])
 
   const initializeMap = () => {
-    if (!mapRef.current || !window.google) return
+    console.log("Initializing map...")
+    
+    if (!mapRef.current) {
+      console.error("Map ref is not available")
+      setError("Map container not found")
+      setIsLoading(false)
+      return
+    }
 
-    const mapInstance = new window.google.maps.Map(mapRef.current, {
-      center,
-      zoom,
-      styles: [
-        {
-          featureType: "poi",
-          elementType: "labels",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "transit",
-          elementType: "labels",
-          stylers: [{ visibility: "off" }],
-        },
-      ],
-      mapTypeControl: false,
-      streetViewControl: false,
-      fullscreenControl: true,
+    if (!window.google || !window.google.maps) {
+      console.error("Google Maps API not loaded")
+      setError("Google Maps API not loaded")
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const mapInstance = new window.google.maps.Map(mapRef.current, {
+        center,
+        zoom,
+        styles: [
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }],
+          },
+          {
+            featureType: "transit",
+            elementType: "labels", 
+            stylers: [{ visibility: "off" }],
+          },
+        ],
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: true,
+      })
+
+      const infoWindowInstance = new window.google.maps.InfoWindow()
+
+      console.log("Map initialized successfully")
+      setMap(mapInstance)
+      setInfoWindow(infoWindowInstance)
+      setIsLoading(false)
+      setError(null)
+
+      // Test marker to verify map is working
+      if (spots.length === 0) {
+        console.log("No spots provided, adding test marker")
+        const testMarker = new window.google.maps.Marker({
+          position: center,
+          map: mapInstance,
+          title: "Test Marker",
+        })
+      }
+
+    } catch (err) {
+      console.error("Error initializing map:", err)
+      setError("Failed to initialize map")
+      setIsLoading(false)
+    }
+  }
+
+  const clearMarkers = () => {
+    console.log("Clearing existing markers")
+    markers.forEach((marker) => {
+      if (marker && marker.setMap) {
+        marker.setMap(null)
+      }
     })
-
-    const infoWindowInstance = new window.google.maps.InfoWindow()
-
-    setMap(mapInstance)
-    setInfoWindow(infoWindowInstance)
+    
+    if (markerCluster && markerCluster.clearMarkers) {
+      markerCluster.clearMarkers()
+    }
+    
+    setMarkers([])
   }
 
   const updateMarkers = () => {
-    if (!map || !window.google) return
-
-    markers.forEach((marker) => marker.setMap(null))
-    if (markerCluster) {
-      markerCluster.clearMarkers()
+    console.log("Updating markers for", spots.length, "spots")
+    
+    if (!map || !window.google) {
+      console.error("Map or Google Maps API not available")
+      return
     }
 
-    const newMarkers = spots.map((spot) => {
-      const marker = new window.google.maps.Marker({
-        position: { lat: spot.lat, lng: spot.lng },
-        map,
-        title: spot.name,
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 8,
-          fillColor:
-            spot.verificationStatus === "verified"
-              ? "#10B981"
-              : spot.verificationStatus === "pending"
-                ? "#F59E0B"
-                : "#8B5B29",
-          fillOpacity: 1,
-          strokeColor: "#FFFFFF",
-          strokeWeight: 2,
-        },
-      })
+    // Clear existing markers
+    clearMarkers()
 
-      marker.addListener("click", () => {
-        setSelectedSpot(spot)
-        showInfoWindow(marker, spot)
-        onMarkerClick?.(spot)
-      })
-
-      marker.addListener("mouseover", () => {
-        marker.setIcon({
-          ...marker.getIcon(),
-          scale: 12,
-        })
-      })
-
-      marker.addListener("mouseout", () => {
-        marker.setIcon({
-          ...marker.getIcon(),
-          scale: 8,
-        })
-      })
-
-      return marker
+    // Validate spots data
+    const validSpots = spots.filter(spot => {
+      const isValid = spot && 
+                     typeof spot.lat === 'number' && 
+                     typeof spot.lng === 'number' && 
+                     !isNaN(spot.lat) && 
+                     !isNaN(spot.lng) &&
+                     spot.lat >= -90 && spot.lat <= 90 &&
+                     spot.lng >= -180 && spot.lng <= 180
+      
+      if (!isValid) {
+        console.warn("Invalid spot data:", spot)
+      }
+      return isValid
     })
 
+    console.log(`Creating ${validSpots.length} markers from ${spots.length} spots`)
+
+    const newMarkers = validSpots.map((spot, index) => {
+      try {
+        console.log(`Creating marker ${index + 1}:`, {
+          name: spot.name,
+          lat: spot.lat,
+          lng: spot.lng,
+          status: spot.verificationStatus
+        })
+
+        const marker = new window.google.maps.Marker({
+          position: { lat: spot.lat, lng: spot.lng },
+          map,
+          title: spot.name,
+          icon: {
+            path: window.google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor:
+              spot.verificationStatus === "verified"
+                ? "#10B981"
+                : spot.verificationStatus === "pending"
+                  ? "#F59E0B"
+                  : "#8B5B29",
+            fillOpacity: 1,
+            strokeColor: "#FFFFFF",
+            strokeWeight: 2,
+          },
+        })
+
+        // Add click listener
+        marker.addListener("click", () => {
+          console.log("Marker clicked:", spot.name)
+          setSelectedSpot(spot)
+          showInfoWindow(marker, spot)
+          onMarkerClick?.(spot)
+        })
+
+        // Add hover effects
+        marker.addListener("mouseover", () => {
+          marker.setIcon({
+            ...marker.getIcon(),
+            scale: 12,
+          })
+        })
+
+        marker.addListener("mouseout", () => {
+          marker.setIcon({
+            ...marker.getIcon(),
+            scale: 8,
+          })
+        })
+
+        console.log(`Marker ${index + 1} created successfully`)
+        return marker
+
+      } catch (err) {
+        console.error(`Error creating marker for spot ${spot.name}:`, err)
+        return null
+      }
+    }).filter(Boolean) // Remove null markers
+
+    console.log(`Successfully created ${newMarkers.length} markers`)
     setMarkers(newMarkers)
 
-    if (window.google.maps.MarkerClusterer) {
-      const clusterer = new window.google.maps.MarkerClusterer({
-        map,
-        markers: newMarkers,
-        gridSize: 60,
-        maxZoom: 15,
+    // Adjust map bounds to show all markers
+    if (newMarkers.length > 0) {
+      const bounds = new window.google.maps.LatLngBounds()
+      newMarkers.forEach(marker => {
+        if (marker && marker.getPosition) {
+          bounds.extend(marker.getPosition())
+        }
       })
-      setMarkerCluster(clusterer)
+      
+      // Only fit bounds if we have multiple markers
+      if (newMarkers.length > 1) {
+        map.fitBounds(bounds)
+      }
+    }
+
+    // Initialize marker clustering if available
+    if (window.google.maps.MarkerClusterer && newMarkers.length > 0) {
+      try {
+        const clusterer = new window.google.maps.MarkerClusterer({
+          map,
+          markers: newMarkers,
+          gridSize: 60,
+          maxZoom: 15, // Changed from 1000 to reasonable value
+        })
+        setMarkerCluster(clusterer)
+        console.log("Marker clustering initialized")
+      } catch (err) {
+        console.warn("Marker clustering failed:", err)
+      }
     }
   }
 
   const showInfoWindow = (marker: any, spot: AmalaSspot) => {
-    if (!infoWindow) return
+    if (!infoWindow) {
+      console.error("InfoWindow not available")
+      return
+    }
 
     const content = `
-      <div class="map-popup">
-        <div class="flex items-start justify-between mb-2">
-          <h3 class="font-semibold text-lg text-card-foreground">${spot.name}</h3>
-          <div class="flex items-center space-x-1 ml-2">
-            <svg class="h-4 w-4 fill-yellow-400 text-yellow-400" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-            </svg>
-            <span class="font-semibold text-sm">${spot.rating}</span>
+      <div style="max-width: 300px; padding: 8px;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px;">
+          <h3 style="font-weight: 600; font-size: 18px; margin: 0; color: #1f2937;">${spot.name}</h3>
+          <div style="display: flex; align-items: center; margin-left: 8px;">
+            <span style="color: #fbbf24;">★</span>
+            <span style="font-weight: 600; font-size: 14px; margin-left: 2px;">${spot.rating}</span>
           </div>
         </div>
-        <p class="text-sm text-muted-foreground mb-2">${spot.address}</p>
-        <p class="text-sm text-card-foreground mb-3 line-clamp-2">${spot.description}</p>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-2">
+        <p style="font-size: 14px; color: #6b7280; margin: 0 0 8px 0;">${spot.address}</p>
+        <p style="font-size: 14px; color: #1f2937; margin: 0 0 12px 0; line-height: 1.4;">${spot.description}</p>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 8px;">
             ${
               spot.verificationStatus === "verified"
-                ? '<span class="verification-badge verified"><svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>Verified</span>'
+                ? '<span style="display: inline-flex; align-items: center; gap: 4px; background: #d1fae5; color: #065f46; padding: 2px 6px; border-radius: 4px; font-size: 12px;"><span style="color: #10b981;">✓</span>Verified</span>'
                 : spot.verificationStatus === "pending"
-                  ? '<span class="verification-badge pending"><svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/></svg>Pending</span>'
-                  : '<span class="text-xs text-muted-foreground">Unverified</span>'
+                  ? '<span style="display: inline-flex; align-items: center; gap: 4px; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-size: 12px;"><span style="color: #f59e0b;">⏳</span>Pending</span>'
+                  : '<span style="font-size: 12px; color: #6b7280;">Unverified</span>'
             }
-            <span class="text-xs">${spot.priceRange}</span>
+            <span style="font-size: 12px;">${spot.priceRange}</span>
           </div>
-          <a href="/spot/${spot.id}" class="inline-flex items-center px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded hover:bg-primary/90 transition-colors">
+          <a href="/spot/${spot.id}" style="display: inline-flex; align-items: center; padding: 4px 12px; background: #3b82f6; color: white; font-size: 12px; font-weight: 500; border-radius: 4px; text-decoration: none;">
             View Details
           </a>
         </div>
@@ -208,15 +357,36 @@ export function GoogleMaps({
     infoWindow.open(map, marker)
   }
 
+  if (error) {
+    return (
+      <div className={`flex items-center justify-center h-full bg-red-50 border border-red-200 rounded ${className}`}>
+        <div className="text-center p-4">
+          <p className="text-red-600 font-medium">Map Error</p>
+          <p className="text-red-500 text-sm mt-1">{error}</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className={`map-container ${className}`}>
+    <div className={`relative ${className}`}>
       <div ref={mapRef} className="w-full h-full" />
-      {typeof window !== "undefined" && !window.google && (
-        <div className="flex items-center justify-center h-full bg-muted">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground">Loading map...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2" />
+            <p className="text-sm text-gray-600">Loading map...</p>
           </div>
+        </div>
+      )}
+      {!isLoading && spots.length === 0 && (
+        <div className="absolute top-4 left-4 bg-white p-2 rounded shadow">
+          <p className="text-sm text-gray-600">No spots to display</p>
+        </div>
+      )}
+      {!isLoading && markers.length > 0 && (
+        <div className="absolute top-4 left-4 bg-white p-2 rounded shadow">
+          <p className="text-sm text-gray-600">{markers.length} spots shown</p>
         </div>
       )}
     </div>

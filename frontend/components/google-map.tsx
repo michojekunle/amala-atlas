@@ -54,8 +54,8 @@ export function GoogleMap({
 
         if (mapRef.current) {
           const map = new google.maps.Map(mapRef.current, {
-            center: { lat: 40.7128, lng: -74.006 }, // Default to NYC
-            zoom: 12,
+            center: { lat: 6.511720832863404, lng: 3.3926679183154658 },
+            zoom: 1200,
             styles: [
               {
                 featureType: "water",
