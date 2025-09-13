@@ -1,0 +1,68 @@
+[
+  {
+    "model": "places.submission",
+    "pk": 201,
+    "fields": {
+      "kind": "manual",
+      "name": "Amala Skoto",
+      "address": "YabaTech Gate",
+      "city": "Lagos",
+      "country": "Nigeria",
+      "lat": 6.517,
+      "lng": 3.378,
+      "price_band": "₦",
+      "tags": ["gbegiri"],
+      "hours_text": "Mon–Sat 10am–8pm",
+      "email": "tester@example.com",
+      "photo_url": "https://images.example/amala-skoto.jpg",
+      "transcript": "",
+      "raw_payload": {},
+      "submitted_by": null,
+      "created_at": "2025-09-09T09:30:00Z"
+    }
+  },
+  {
+    "model": "places.submission",
+    "pk": 202,
+    "fields": {
+      "kind": "agentic",
+      "name": "Amala Iyawo Bodija",
+      "address": "Bodija",
+      "city": "Ibadan",
+      "country": "Nigeria",
+      "lat": 7.405,
+      "lng": 3.915,
+      "price_band": "₦₦",
+      "tags": ["abula","ewedu"],
+      "hours_text": "Mon–Sun 9am–9pm",
+      "email": "",
+      "photo_url": "",
+      "transcript": "Add Amala Iyawo at Bodija, Ibadan price ₦₦ open daily",
+      "raw_payload": {"source":"voice"},
+      "submitted_by": null,
+      "created_at": "2025-09-09T10:15:00Z"
+    }
+  },
+  {
+    "model": "places.submission",
+    "pk": 203,
+    "fields": {
+      "kind": "manual",
+      "name": "Abula Corner",
+      "address": "Area 11",
+      "city": "Abuja",
+      "country": "Nigeria",
+      "lat": 9.046,
+      "lng": 7.491,
+      "price_band": "₦₦₦",
+      "tags": ["abula"],
+      "hours_text": "Tue–Sun 11am–7pm",
+      "email": "abula@example.com",
+      "photo_url": "https://images.example/abula-corner.jpg",
+      "transcript": "",
+      "raw_payload": {},
+      "submitted_by": null,
+      "created_at": "2025-09-10T12:00:00Z"
+    }
+  }
+]

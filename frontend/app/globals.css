@@ -1,0 +1,204 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated to amala spots discovery color palette with better contrast */
+  --background: #ffffff; /* Pure white for cleanliness */
+  --foreground: #4b3d3a; /* Dark brown for excellent readability */
+  --card: #f5f5f0; /* Light beige for subtle card backgrounds */
+  --card-foreground: #4b3d3a; /* Dark brown for card text */
+  --popover: #ffffff; /* White popover background */
+  --popover-foreground: #4b3d3a; /* Dark brown popover text */
+  --primary: #7b5b3a; /* Warm brown primary - cozy and trustworthy */
+  --primary-foreground: #ffffff; /* White text on primary buttons */
+  --secondary: #d9a86d; /* Soft gold for secondary actions */
+  --secondary-foreground: #4b3d3a; /* Dark brown for secondary text */
+  --muted: #f5f5f0; /* Light beige muted background */
+  --muted-foreground: #4b3d3a; /* Dark brown for muted text */
+  --accent: #d9a86d; /* Soft gold accent for highlights */
+  --accent-foreground: #4b3d3a; /* Dark brown for accent text */
+  --destructive: #ea580c; /* Warm red for destructive actions */
+  --destructive-foreground: #ffffff; /* White text on destructive buttons */
+  --border: #d9a86d; /* Soft gold borders */
+  --input: #f5f5f0; /* Light beige input fields */
+  --ring: #d9a86d; /* Soft gold focus rings */
+  --chart-1: #7b5b3a; /* Primary brown for charts */
+  --chart-2: #d9a86d; /* Soft gold for charts */
+  --chart-3: #4b3d3a; /* Dark brown for charts */
+  --chart-4: #f5f5f0; /* Light beige for charts */
+  --chart-5: #ffffff; /* White for chart backgrounds */
+  --radius: 0.75rem; /* Rounded corners for playful feel */
+  --sidebar: #f5f5f0; /* Light beige sidebar */
+  --sidebar-foreground: #4b3d3a; /* Dark brown sidebar text */
+  --sidebar-primary: #7b5b3a; /* Primary brown for sidebar */
+  --sidebar-primary-foreground: #ffffff; /* White text for sidebar primary */
+  --sidebar-accent: #d9a86d; /* Soft gold accent for sidebar */
+  --sidebar-accent-foreground: #4b3d3a; /* Dark brown for sidebar accent text */
+  --sidebar-border: #d9a86d; /* Soft gold sidebar borders */
+  --sidebar-ring: #d9a86d; /* Soft gold focus rings for sidebar */
+}
+
+.dark {
+  /* Dark mode with warm, cozy tones */
+  --background: #2a1f1a; /* Warm dark background */
+  --foreground: #f5f5f0; /* Light beige text */
+  --card: #3d2f2a; /* Dark brown card */
+  --card-foreground: #d9a86d; /* Soft gold card text */
+  --popover: #3d2f2a; /* Dark brown popover */
+  --popover-foreground: #f5f5f0; /* Light beige popover text */
+  --primary: #d9a86d; /* Soft gold for dark mode primary */
+  --primary-foreground: #2a1f1a; /* Dark text on primary */
+  --secondary: #7b5b3a; /* Darker brown for secondary */
+  --secondary-foreground: #f5f5f0; /* Light text on secondary */
+  --muted: #3d2f2a; /* Dark brown muted */
+  --muted-foreground: #a0a0a0; /* Light gray muted text */
+  --accent: #d9a86d; /* Soft gold accent */
+  --accent-foreground: #2a1f1a; /* Dark accent text */
+  --destructive: #ff6b47; /* Brighter red for dark mode */
+  --destructive-foreground: #2a1f1a; /* Dark text on destructive */
+  --border: #4b3d3a; /* Dark brown border */
+  --input: #3d2f2a; /* Dark brown input */
+  --ring: #d9a86d; /* Soft gold focus ring */
+  --chart-1: #d9a86d; /* Soft gold for dark charts */
+  --chart-2: #7b5b3a; /* Brown for dark charts */
+  --chart-3: #f5f5f0; /* Beige for dark charts */
+  --chart-4: #3d2f2a; /* Dark brown for charts */
+  --chart-5: #2a1f1a; /* Dark background for charts */
+  --sidebar: #3d2f2a; /* Dark brown sidebar */
+  --sidebar-foreground: #f5f5f0; /* Light sidebar text */
+  --sidebar-primary: #d9a86d; /* Soft gold sidebar primary */
+  --sidebar-primary-foreground: #2a1f1a; /* Dark sidebar primary text */
+  --sidebar-accent: #7b5b3a; /* Brown sidebar accent */
+  --sidebar-accent-foreground: #f5f5f0; /* Light sidebar accent text */
+  --sidebar-border: #4b3d3a; /* Dark brown sidebar border */
+  --sidebar-ring: #d9a86d; /* Soft gold sidebar focus ring */
+}
+
+@theme inline {
+  /* Updated font configuration for calmness and trust */
+  --font-sans: var(--font-space-grotesk);
+  --font-mono: var(--font-dm-sans);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  /* Added typography classes for better readability and trust */
+  .text-heading {
+    @apply font-bold text-2xl md:text-3xl text-balance;
+  }
+
+  .text-subheading {
+    @apply font-semibold text-lg md:text-xl text-balance;
+  }
+
+  .text-body {
+    @apply text-base leading-relaxed text-pretty;
+  }
+
+  .text-caption {
+    @apply text-sm text-muted-foreground;
+  }
+}
+
+/* Enhanced animations for better UX */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out;
+}
+
+/* Added verification badge styles */
+.verification-badge {
+  @apply inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground;
+}
+
+.verification-badge.verified {
+  @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+}
+
+.verification-badge.pending {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+}

@@ -1,0 +1,138 @@
+[
+  {
+    "model": "places.spot",
+    "pk": 1,
+    "fields": {
+      "name": "Amala Iyawo",
+      "lat": 7.404,
+      "lng": 3.914,
+      "address": "Bodija Market",
+      "city": "Ibadan",
+      "country": "Nigeria",
+      "price_band": "₦₦",
+      "tags": ["abula","gbegiri"],
+      "photos": [],
+      "source": "verified",
+      "created_at": "2025-09-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "places.spot",
+    "pk": 2,
+    "fields": {
+      "name": "Skoto Amala",
+      "lat": 6.5173,
+      "lng": 3.3781,
+      "address": "YabaTech Gate, Yaba",
+      "city": "Lagos",
+      "country": "Nigeria",
+      "price_band": "₦",
+      "tags": ["ewedu"],
+      "photos": [],
+      "source": "verified",
+      "created_at": "2025-09-02T10:30:00Z"
+    }
+  },
+
+  {
+    "model": "places.candidate",
+    "pk": 101,
+    "fields": {
+      "name": "Amala Mama Sikira",
+      "raw_address": "Orita Challenge",
+      "lat": 7.35,
+      "lng": 3.89,
+      "city": "Ibadan",
+      "country": "Nigeria",
+      "price_band": "₦",
+      "source_url": "https://foodblog.example/top-amala-ibadan",
+      "source_kind": "blog",
+      "evidence": [
+        {
+          "provider": "blog",
+          "url": "https://foodblog.example/top-amala-ibadan",
+          "title": "Top Amala in Ibadan",
+          "snippet": "…Mama Sikira’s abula is a must-try…"
+        }
+      ],
+      "signals": {"keyword_hits": 3, "has_photo": false, "has_coords": true},
+      "score": 0.78,
+      "dedupe_key": "name:amala-mama-sikira|gh:5t3a9",
+      "geo_precision": "address",
+      "status": "pending_verification",
+      "created_at": "2025-09-09T10:00:00Z"
+    }
+  },
+  {
+    "model": "places.candidate",
+    "pk": 102,
+    "fields": {
+      "name": "Amala Iya Meta",
+      "raw_address": "Ring Road",
+      "lat": 7.38,
+      "lng": 3.89,
+      "city": "Ibadan",
+      "country": "Nigeria",
+      "price_band": "₦₦",
+      "source_url": "https://fooddir.example/amala-iyameta",
+      "source_kind": "directory",
+      "evidence": [
+        {"provider":"directory","url":"https://fooddir.example/amala-iyameta","title":"Amala Iya Meta"}
+      ],
+      "signals": {"keyword_hits": 2, "has_coords": true},
+      "score": 0.72,
+      "dedupe_key": "name:amala-iya-meta|gh:5t3a9",
+      "geo_precision": "address",
+      "status": "pending_verification",
+      "created_at": "2025-09-09T11:40:00Z"
+    }
+  },
+  {
+    "model": "places.candidate",
+    "pk": 103,
+    "fields": {
+      "name": "Buka Gidi",
+      "raw_address": "Surulere",
+      "lat": 6.495,
+      "lng": 3.354,
+      "city": "Lagos",
+      "country": "Nigeria",
+      "price_band": "₦",
+      "source_url": "https://tweet.example/12345",
+      "source_kind": "social",
+      "evidence": [
+        {"provider":"social","url":"https://tweet.example/12345","title":"Hidden Amala joint in Surulere"}
+      ],
+      "signals": {"keyword_hits": 1, "has_coords": true},
+      "score": 0.58,
+      "dedupe_key": "name:buka-gidi|gh:5t9k2",
+      "geo_precision": "city",
+      "status": "pending_verification",
+      "created_at": "2025-09-10T08:05:00Z"
+    }
+  },
+  {
+    "model": "places.candidate",
+    "pk": 104,
+    "fields": {
+      "name": "Abula Corner",
+      "raw_address": "Area 11",
+      "lat": 9.046,
+      "lng": 7.491,
+      "city": "Abuja",
+      "country": "Nigeria",
+      "price_band": "₦₦₦",
+      "source_url": "",
+      "source_kind": "user",
+      "evidence": [
+        {"provider":"user_submit","url":"","title":"User photo","snippet":"Uploaded from phone"}
+      ],
+      "signals": {"keyword_hits": 2, "has_photo": true, "has_coords": true},
+      "score": 0.65,
+      "dedupe_key": "name:abula-corner|gh:7h1m3",
+      "geo_precision": "address",
+      "status": "pending_verification",
+      "created_at": "2025-09-10T12:20:00Z"
+    }
+  }
+]

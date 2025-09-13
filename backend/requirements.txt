@@ -1,0 +1,10 @@
+Django~=5.2.6
+pipenv~=2025.0.4
+spacy~=3.8.7
+Scrapy~=2.13.3
+virtualenv~=20.34.0
+django-environ~=0.12.0
+djangorestframework~=3.16.1
+django-filter~=25.1
+djangorestframework-jsonapi~=8.0.0
+django-extensions~=4.1
