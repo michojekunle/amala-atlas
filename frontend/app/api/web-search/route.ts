@@ -1,39 +1,44 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { generateText } from "ai"
-import { createGroq } from "@ai-sdk/groq"
+import { type NextRequest, NextResponse } from "next/server";
+import { generateText } from "ai";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
-const groq = createGroq({
-  apiKey: process.env.GROQ_API_KEY,
-})
+const googleAI = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_AI_API_KEY,
+});
 
 interface WebSearchRequest {
-  query: string
-  location?: string
-  type?: "restaurants" | "reviews" | "general"
+  query: string;
+  location?: string;
+  type?: "restaurants" | "reviews" | "general";
 }
 
 interface WebSearchResult {
-  title: string
-  url: string
-  snippet: string
-  relevanceScore: number
-  source: string
-  type: "restaurant" | "review" | "directory" | "social"
+  title: string;
+  url: string;
+  snippet: string;
+  relevanceScore: number;
+  source: string;
+  type: "restaurant" | "review" | "directory" | "social";
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body: WebSearchRequest = await request.json()
-    const { query, location, type = "restaurants" } = body
+    const body: WebSearchRequest = await request.json();
+    const { query, location, type = "restaurants" } = body;
 
     if (!query) {
-      return NextResponse.json({ success: false, error: "Search query is required" }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: "Search query is required" },
+        { status: 400 }
+      );
     }
 
-    console.log("[v0] Web search initiated for:", query)
+    console.log(" Web search initiated for:", query);
 
     const webSearchPrompt = `
-You are a web search engine specializing in Nigerian restaurants and Amala spots. Generate realistic web search results for the query: "${query}"${location ? ` in ${location}` : ""}.
+You are a web search engine specializing in Nigerian restaurants and Amala spots. Generate realistic web search results for the query: "${query}"${
+      location ? ` in ${location}` : ""
+    }.
 
 Create 5-8 realistic search results that would appear when searching for Nigerian restaurants, Amala spots, or related content. Each result should include:
 
@@ -68,19 +73,19 @@ Respond in JSON format:
   "totalResults": 6,
   "searchTime": "0.45 seconds"
 }
-`
+`;
 
     const { text } = await generateText({
-      model: groq("llama-3.1-70b-versatile"),
+      model: googleAI("gemini-1.5-pro-latest"),
       prompt: webSearchPrompt,
       temperature: 0.6,
-    })
+    });
 
-    let searchResults
+    let searchResults;
     try {
-      searchResults = JSON.parse(text)
+      searchResults = JSON.parse(text);
     } catch (parseError) {
-      console.error("[v0] Web search response parsing error:", parseError)
+      console.error(" Web search response parsing error:", parseError);
       // Fallback results
       searchResults = {
         results: [
@@ -105,18 +110,26 @@ Respond in JSON format:
         ],
         totalResults: 2,
         searchTime: "0.32 seconds",
-      }
+      };
     }
 
     if (location) {
-      searchResults.results = searchResults.results.map((result: WebSearchResult) => ({
-        ...result,
-        title: result.title.includes(location) ? result.title : `${result.title} - ${location}`,
-        snippet: result.snippet + ` Located in ${location}.`,
-      }))
+      searchResults.results = searchResults.results.map(
+        (result: WebSearchResult) => ({
+          ...result,
+          title: result.title.includes(location)
+            ? result.title
+            : `${result.title} - ${location}`,
+          snippet: result.snippet + ` Located in ${location}.`,
+        })
+      );
     }
 
-    console.log("[v0] Web search completed, found", searchResults.totalResults, "results")
+    console.log(
+      " Web search completed, found",
+      searchResults.totalResults,
+      "results"
+    );
 
     return NextResponse.json({
       success: true,
@@ -125,9 +138,12 @@ Respond in JSON format:
       searchTime: searchResults.searchTime,
       query: query,
       location: location,
-    })
+    });
   } catch (error) {
-    console.error("[v0] Web search error:", error)
-    return NextResponse.json({ success: false, error: "Failed to perform web search" }, { status: 500 })
+    console.error(" Web search error:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to perform web search" },
+      { status: 500 }
+    );
   }
 }

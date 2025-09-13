@@ -1,56 +1,52 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Moon,
   Sun,
   Search,
-  MapPin,
-  Star,
-  Navigation,
   Filter,
-  Heart,
   Plus,
-  CheckCircle,
-  Clock,
-  Users,
   Utensils,
   Globe,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
-import { PWAInstallPrompt } from "@/components/pwa-install-prompt"
-import { OfflineIndicator } from "@/components/offline-indicator"
-import { VoiceCommandButton } from "@/components/voice-command-button"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+  Map,
+  List,
+} from "lucide-react";
+import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
+import { OfflineIndicator } from "@/components/offline-indicator";
+import { VoiceCommandButton } from "@/components/voice-command-button";
+import { GoogleMaps } from "@/components/google-maps";
+import { LocationCard } from "@/components/location-card";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface AmalaSspot {
-  id: string
-  name: string
-  address: string
-  lat: number
-  lng: number
-  description: string
-  rating: number
-  reviewCount: number
-  distance: string
-  isVerified: boolean
-  verificationStatus: "verified" | "pending" | "unverified"
-  isFavorite: boolean
-  imageUrl: string
-  priceRange: "$" | "$$" | "$$$"
-  cuisine: string[]
-  openNow: boolean
-  submittedBy: string
-  submittedDate: string
+  id: string;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+  description: string;
+  rating: number;
+  reviewCount: number;
+  distance: string;
+  isVerified: boolean;
+  verificationStatus: "verified" | "pending" | "unverified";
+  isFavorite: boolean;
+  imageUrl: string;
+  priceRange: "$" | "$$" | "$$$";
+  cuisine: string[];
+  openNow: boolean;
+  submittedBy: string;
+  submittedDate: string;
 }
 
 export default function AmalaSpotsList() {
-  const router = useRouter()
+  const router = useRouter();
   const [spots, setSpots] = useState<AmalaSspot[]>([
     {
       id: "1",
@@ -79,7 +75,8 @@ export default function AmalaSpotsList() {
       address: "456 Nostrand Ave, Brooklyn, NY 11216",
       lat: 40.7505,
       lng: -73.9934,
-      description: "Modern take on classic amala with gbegiri and ewedu. Clean, contemporary dining experience.",
+      description:
+        "Modern take on classic amala with gbegiri and ewedu. Clean, contemporary dining experience.",
       rating: 4.6,
       reviewCount: 89,
       distance: "0.5 mi",
@@ -99,7 +96,8 @@ export default function AmalaSpotsList() {
       address: "789 Fulton Street, Brooklyn, NY 11238",
       lat: 40.7831,
       lng: -73.9712,
-      description: "Home-style cooking with generous portions. Known for their perfectly smooth amala texture.",
+      description:
+        "Home-style cooking with generous portions. Known for their perfectly smooth amala texture.",
       rating: 4.3,
       reviewCount: 45,
       distance: "1.1 mi",
@@ -119,7 +117,8 @@ export default function AmalaSpotsList() {
       address: "321 Atlantic Ave, Brooklyn, NY 11201",
       lat: 40.6892,
       lng: -73.9442,
-      description: "Authentic Yoruba dishes in a vibrant atmosphere. Weekend live music and cultural events.",
+      description:
+        "Authentic Yoruba dishes in a vibrant atmosphere. Weekend live music and cultural events.",
       rating: 4.5,
       reviewCount: 203,
       distance: "1.8 mi",
@@ -133,16 +132,20 @@ export default function AmalaSpotsList() {
       submittedBy: "Community",
       submittedDate: "2023-11-20",
     },
-  ])
+  ]);
 
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [filterOpen, setFilterOpen] = useState(false)
-  const [sortBy, setSortBy] = useState<"distance" | "rating" | "newest">("distance")
-  const [isAISearching, setIsAISearching] = useState(false)
-  const [aiResults, setAiResults] = useState<AmalaSspot[]>([])
-  const [showAIResults, setShowAIResults] = useState(false)
-  const [aiSearchInsights, setAiSearchInsights] = useState("")
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<"distance" | "rating" | "newest">(
+    "distance"
+  );
+  const [isAISearching, setIsAISearching] = useState(false);
+  const [aiResults, setAiResults] = useState<AmalaSspot[]>([]);
+  const [showAIResults, setShowAIResults] = useState(false);
+  const [aiSearchInsights, setAiSearchInsights] = useState("");
+  const [viewMode, setViewMode] = useState<"map" | "list">("map");
+  const [selectedSpot, setSelectedSpot] = useState<AmalaSspot | null>(null);
 
   const voiceCommands = [
     {
@@ -155,8 +158,8 @@ export default function AmalaSpotsList() {
       command: "find nearby",
       pattern: /find nearby|nearby spots|spots near me/i,
       action: () => {
-        setSearchQuery("nearby Amala spots")
-        performAISearch()
+        setSearchQuery("nearby Amala spots");
+        performAISearch();
       },
       description: "Find nearby Amala spots",
     },
@@ -164,7 +167,7 @@ export default function AmalaSpotsList() {
       command: "add spot",
       pattern: /add spot|submit location|new restaurant/i,
       action: () => {
-        router.push("/submit")
+        router.push("/submit");
       },
       description: "Add a new Amala spot",
     },
@@ -172,7 +175,7 @@ export default function AmalaSpotsList() {
       command: "sort by rating",
       pattern: /sort by rating|best rated|highest rated/i,
       action: () => {
-        setSortBy("rating")
+        setSortBy("rating");
       },
       description: "Sort by highest rating",
     },
@@ -180,7 +183,7 @@ export default function AmalaSpotsList() {
       command: "sort by distance",
       pattern: /sort by distance|closest|nearest/i,
       action: () => {
-        setSortBy("distance")
+        setSortBy("distance");
       },
       description: "Sort by distance",
     },
@@ -188,7 +191,7 @@ export default function AmalaSpotsList() {
       command: "open AI assistant",
       pattern: /ai assistant|assistant|help me find/i,
       action: () => {
-        router.push("/ai-assistant")
+        router.push("/ai-assistant");
       },
       description: "Open AI assistant",
     },
@@ -196,37 +199,43 @@ export default function AmalaSpotsList() {
       command: "toggle dark mode",
       pattern: /dark mode|light mode|toggle theme/i,
       action: () => {
-        setIsDarkMode(!isDarkMode)
+        setIsDarkMode(!isDarkMode);
       },
       description: "Toggle dark/light mode",
     },
-  ]
+  ];
 
   useEffect(() => {
     if (isDarkMode) {
-      document.documentElement.classList.add("dark")
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove("dark")
+      document.documentElement.classList.remove("dark");
     }
-  }, [isDarkMode])
+  }, [isDarkMode]);
 
   const toggleFavorite = (spotId: string) => {
-    setSpots((prev) => prev.map((spot) => (spot.id === spotId ? { ...spot, isFavorite: !spot.isFavorite } : spot)))
-  }
+    setSpots((prev) =>
+      prev.map((spot) =>
+        spot.id === spotId ? { ...spot, isFavorite: !spot.isFavorite } : spot
+      )
+    );
+  };
 
   const filteredSpots = spots.filter(
     (spot) =>
       spot.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spot.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
       spot.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spot.cuisine.some((c) => c.toLowerCase().includes(searchQuery.toLowerCase())),
-  )
+      spot.cuisine.some((c) =>
+        c.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+  );
 
   const performAISearch = async () => {
-    if (!searchQuery.trim() || isAISearching) return
+    if (!searchQuery.trim() || isAISearching) return;
 
-    setIsAISearching(true)
-    console.log("[v0] Starting AI search for:", searchQuery)
+    setIsAISearching(true);
+    console.log(" Starting AI search for:", searchQuery);
 
     try {
       const response = await fetch("/api/ai-search", {
@@ -240,60 +249,79 @@ export default function AmalaSpotsList() {
           userLat: 40.7589,
           userLng: -73.9851,
         }),
-      })
+      });
 
       if (response.ok) {
-        const data = await response.json()
-        console.log("[v0] AI search completed:", data)
+        const data = await response.json();
+        console.log("AI search completed:", data);
 
-        setAiResults(data.results || [])
-        setAiSearchInsights(data.insights || "")
-        setShowAIResults(true)
+        setAiResults(data.results || []);
+        setAiSearchInsights(data.insights || "");
+        setShowAIResults(true);
       } else {
-        throw new Error("AI search failed")
+        throw new Error("AI search failed");
       }
     } catch (error) {
-      console.error("[v0] AI search error:", error)
-      setAiResults([])
-      setAiSearchInsights("AI search temporarily unavailable")
+      console.error("AI search error:", error);
+      setAiResults([]);
+      setAiSearchInsights("AI search temporarily unavailable");
     } finally {
-      setIsAISearching(false)
+      setIsAISearching(false);
     }
-  }
+  };
 
-  const allResults = showAIResults ? [...filteredSpots, ...aiResults] : filteredSpots
+  const allResults = showAIResults
+    ? [...filteredSpots, ...aiResults]
+    : filteredSpots;
 
   const sortedSpots = [...allResults].sort((a, b) => {
     switch (sortBy) {
       case "rating":
-        return b.rating - a.rating
+        return b.rating - a.rating;
       case "newest":
-        return new Date(b.submittedDate).getTime() - new Date(a.submittedDate).getTime()
+        return (
+          new Date(b.submittedDate).getTime() -
+          new Date(a.submittedDate).getTime()
+        );
       default:
-        return Number.parseFloat(a.distance) - Number.parseFloat(b.distance)
+        return Number.parseFloat(a.distance) - Number.parseFloat(b.distance);
     }
-  })
+  });
 
   useEffect(() => {
-    if (searchQuery.trim() && filteredSpots.length === 0 && !isAISearching && !showAIResults) {
+    if (
+      searchQuery.trim() &&
+      filteredSpots.length === 0 &&
+      !isAISearching &&
+      !showAIResults
+    ) {
       const timer = setTimeout(() => {
-        performAISearch()
-      }, 1000)
+        performAISearch();
+      }, 1000);
 
-      return () => clearTimeout(timer)
+      return () => clearTimeout(timer);
     }
-  }, [searchQuery, filteredSpots.length])
+  }, [searchQuery, filteredSpots.length]);
 
   const handleVoiceTranscript = (transcript: string) => {
-    const searchMatch = transcript.toLowerCase().match(/search for (.+)/i)
+    const searchMatch = transcript.toLowerCase().match(/search for (.+)/i);
     if (searchMatch) {
-      setSearchQuery(searchMatch[1])
+      setSearchQuery(searchMatch[1]);
       if (showAIResults) {
-        setShowAIResults(false)
-        setAiResults([])
+        setShowAIResults(false);
+        setAiResults([]);
       }
     }
-  }
+  };
+
+  const handleMarkerClick = (spot: AmalaSspot) => {
+    setSelectedSpot(spot);
+  };
+
+  const handleViewOnMap = (spot: AmalaSspot) => {
+    setViewMode("map");
+    setSelectedSpot(spot);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -308,20 +336,32 @@ export default function AmalaSpotsList() {
                 <Utensils className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-heading font-bold text-foreground">Amala Spots</h1>
-                <p className="text-caption hidden sm:block">Discover authentic Amala experiences</p>
+                <h1 className="text-heading font-bold text-foreground">
+                  Amala Atlas
+                </h1>
+                <p className="text-caption hidden sm:block">
+                  Discover authentic Amala experiences
+                </p>
               </div>
             </div>
 
             <div className="flex items-center space-x-2">
               <Link href="/web-search">
-                <Button variant="outline" size="sm" className="hidden md:flex bg-transparent">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hidden md:flex bg-transparent"
+                >
                   <Globe className="h-4 w-4 mr-2" />
                   Web Search
                 </Button>
               </Link>
               <Link href="/ai-assistant">
-                <Button variant="outline" size="sm" className="hidden sm:flex bg-transparent">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hidden sm:flex bg-transparent"
+                >
                   <Search className="h-4 w-4 mr-2" />
                   AI Search
                 </Button>
@@ -332,7 +372,11 @@ export default function AmalaSpotsList() {
                 onClick={() => setIsDarkMode(!isDarkMode)}
                 className="text-foreground hover:bg-accent"
               >
-                {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                {isDarkMode ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
               </Button>
             </div>
           </div>
@@ -348,10 +392,10 @@ export default function AmalaSpotsList() {
                 placeholder="Search spots, cuisine, or location..."
                 value={searchQuery}
                 onChange={(e) => {
-                  setSearchQuery(e.target.value)
+                  setSearchQuery(e.target.value);
                   if (showAIResults) {
-                    setShowAIResults(false)
-                    setAiResults([])
+                    setShowAIResults(false);
+                    setAiResults([]);
                   }
                 }}
                 className="pl-10 pr-12 h-11 bg-background border-border focus:ring-primary text-body"
@@ -366,13 +410,37 @@ export default function AmalaSpotsList() {
                   commands={voiceCommands}
                   onTranscript={handleVoiceTranscript}
                   onCommand={(command) => {
-                    console.log("[v0] Voice command executed:", command)
+                    console.log(" Voice command executed:", command);
                   }}
                 />
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setFilterOpen(!filterOpen)} className="h-11 px-4">
+              <div className="flex border border-border rounded-lg overflow-hidden">
+                <Button
+                  variant={viewMode === "map" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("map")}
+                  className="rounded-none h-11 px-3"
+                >
+                  <Map className="h-4 w-4 mr-2" />
+                  Map
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  className="rounded-none h-11 px-3"
+                >
+                  <List className="h-4 w-4 mr-2" />
+                  List
+                </Button>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setFilterOpen(!filterOpen)}
+                className="h-11 px-4"
+              >
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
               </Button>
@@ -420,9 +488,12 @@ export default function AmalaSpotsList() {
               )}
             </h2>
             <p className="text-caption mt-1">
-              Showing results {searchQuery ? `for "${searchQuery}"` : "in your area"}
+              Showing results{" "}
+              {searchQuery ? `for "${searchQuery}"` : "in your area"}
               {aiSearchInsights && (
-                <span className="block text-muted-foreground mt-1">AI Insights: {aiSearchInsights}</span>
+                <span className="block text-muted-foreground mt-1">
+                  AI Insights: {aiSearchInsights}
+                </span>
               )}
             </p>
           </div>
@@ -433,7 +504,9 @@ export default function AmalaSpotsList() {
             <div className="flex items-center space-x-3">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary" />
               <div>
-                <h3 className="font-semibold text-primary">AI Search in Progress</h3>
+                <h3 className="font-semibold text-primary">
+                  AI Search in Progress
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   Discovering potential Amala spots that match your search...
                 </p>
@@ -442,121 +515,82 @@ export default function AmalaSpotsList() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedSpots.map((spot) => (
-            <Card
-              key={spot.id}
-              className={cn(
-                "group hover:shadow-lg transition-all duration-200 border-border overflow-hidden animate-fade-in",
-                spot.submittedBy === "AI Discovery" && "border-primary/30 bg-primary/5",
-              )}
-            >
-              <div className="relative">
-                <img
-                  src={spot.imageUrl || "/placeholder.svg"}
-                  alt={spot.name}
-                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm hover:bg-background/90 h-8 w-8"
-                  onClick={() => toggleFavorite(spot.id)}
-                >
-                  <Heart
-                    className={cn("h-4 w-4", spot.isFavorite ? "fill-red-500 text-red-500" : "text-muted-foreground")}
-                  />
-                </Button>
-
-                <div className="absolute top-3 left-3">
-                  {spot.submittedBy === "AI Discovery" && (
-                    <Badge className="bg-primary/90 text-primary-foreground mb-1">
-                      <Search className="h-3 w-3 mr-1" />
-                      AI Discovered
-                    </Badge>
-                  )}
-                  {spot.verificationStatus === "verified" && (
-                    <Badge className="verification-badge verified">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Verified
-                    </Badge>
-                  )}
-                  {spot.verificationStatus === "pending" && (
-                    <Badge className="verification-badge pending">
-                      <Clock className="h-3 w-3 mr-1" />
-                      Pending
-                    </Badge>
-                  )}
-                </div>
-
-                <div className="absolute bottom-3 left-3">
-                  <Badge variant={spot.openNow ? "default" : "secondary"} className="text-xs">
-                    {spot.openNow ? "Open Now" : "Closed"}
-                  </Badge>
-                </div>
-              </div>
-
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-subheading font-bold text-card-foreground group-hover:text-primary transition-colors">
-                      {spot.name}
-                    </h3>
-                    <p className="text-caption mt-1">{spot.address}</p>
-                  </div>
-                  <div className="text-right ml-3">
-                    <div className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold text-sm">{spot.rating}</span>
-                    </div>
-                    <p className="text-caption">({spot.reviewCount})</p>
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="pt-0">
-                <p className="text-body text-muted-foreground mb-4 line-clamp-2">{spot.description}</p>
-
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {spot.cuisine.slice(0, 3).map((cuisine) => (
-                    <Badge key={cuisine} variant="secondary" className="text-xs">
-                      {cuisine}
-                    </Badge>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 text-caption">
-                    <span className="flex items-center">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      {spot.distance}
-                    </span>
-                    <span>{spot.priceRange}</span>
-                  </div>
-
-                  <Link href={`/spot/${spot.id}`}>
-                    <Button size="sm" className="bg-primary hover:bg-primary/90">
-                      <Navigation className="h-4 w-4 mr-1" />
-                      View Details
-                    </Button>
-                  </Link>
-                </div>
-
-                <div className="mt-3 pt-3 border-t border-border">
-                  <p className="text-caption flex items-center">
-                    <Users className="h-3 w-3 mr-1" />
-                    Added by {spot.submittedBy}
-                  </p>
-                </div>
-              </CardContent>
+        {viewMode === "map" ? (
+          <div className="space-y-6">
+            <Card className="overflow-hidden py-0 h-96 lg:min-h-[80vh]">
+              <GoogleMaps
+                spots={sortedSpots}
+                center={{ lat: 6.511720832863404, lng: 3.3926679183154658 }}
+                zoom={12}
+                onMarkerClick={handleMarkerClick}
+                className="h-full"
+              />
             </Card>
-          ))}
-        </div>
+
+            {selectedSpot && (
+              <Card className="border-primary/30 bg-primary/5">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-subheading font-semibold text-primary">
+                      Selected Location
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedSpot(null)}
+                    >
+                      ×
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <LocationCard
+                    spot={selectedSpot}
+                    onToggleFavorite={toggleFavorite}
+                    onViewOnMap={handleViewOnMap}
+                    showMapPreview={false}
+                  />
+                </CardContent>
+              </Card>
+            )}
+
+            {/* <div>
+              <h3 className="text-subheading font-semibold mb-4">
+                All Locations
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sortedSpots.map((spot) => (
+                  <LocationCard
+                    key={spot.id}
+                    spot={spot}
+                    onToggleFavorite={toggleFavorite}
+                    onViewOnMap={handleViewOnMap}
+                    showMapPreview={true}
+                  />
+                ))}
+              </div>
+            </div> */}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sortedSpots.map((spot) => (
+              <LocationCard
+                key={spot.id}
+                spot={spot}
+                onToggleFavorite={toggleFavorite}
+                onViewOnMap={handleViewOnMap}
+                showMapPreview={false}
+              />
+            ))}
+          </div>
+        )}
 
         {sortedSpots.length === 0 && !isAISearching && (
           <div className="text-center py-12">
             <Utensils className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-subheading text-foreground mb-2">No spots found</h3>
+            <h3 className="text-subheading text-foreground mb-2">
+              No spots found
+            </h3>
             <p className="text-body text-muted-foreground mb-6">
               {searchQuery
                 ? `No results for "${searchQuery}". Try a different search term or let AI help discover new spots.`
@@ -570,7 +604,11 @@ export default function AmalaSpotsList() {
                 </Button>
               </Link>
               {searchQuery && (
-                <Button variant="outline" onClick={performAISearch} disabled={isAISearching}>
+                <Button
+                  variant="outline"
+                  onClick={performAISearch}
+                  disabled={isAISearching}
+                >
                   <Search className="h-4 w-4 mr-2" />
                   AI Search
                 </Button>
@@ -580,5 +618,5 @@ export default function AmalaSpotsList() {
         )}
       </main>
     </div>
-  )
+  );
 }

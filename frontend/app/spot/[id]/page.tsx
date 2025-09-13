@@ -515,7 +515,7 @@ export default function SpotDetailPage() {
             </Card>
 
             {/* Verification info */}
-            <Card>
+            <Card className="mt-12">
               <CardHeader>
                 <h3 className="text-subheading font-bold text-card-foreground">Community Verification</h3>
               </CardHeader>

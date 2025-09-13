@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowLeft,
   Send,
@@ -21,33 +21,33 @@ import {
   Lightbulb,
   Navigation,
   Sparkles,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useRouter } from "next/navigation"
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface Message {
-  id: string
-  content: string
-  sender: "user" | "agent"
-  timestamp: Date
-  type?: "text" | "location_suggestion" | "search_results" | "recommendation"
-  data?: any
+  id: string;
+  content: string;
+  sender: "user" | "agent";
+  timestamp: Date;
+  type?: "text" | "location_suggestion" | "search_results" | "recommendation";
+  data?: any;
 }
 
 interface LocationSuggestion {
-  id: string
-  name: string
-  address: string
-  description: string
-  rating: number
-  priceRange: string
-  cuisine: string[]
-  distance: string
-  confidence: number
+  id: string;
+  name: string;
+  address: string;
+  description: string;
+  rating: number;
+  priceRange: string;
+  cuisine: string[];
+  distance: string;
+  confidence: number;
 }
 
 export default function AIAssistantPage() {
-  const router = useRouter()
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -57,22 +57,30 @@ export default function AIAssistantPage() {
       timestamp: new Date(),
       type: "text",
     },
-  ])
-  const [inputValue, setInputValue] = useState("")
-  const [isRecording, setIsRecording] = useState(false)
-  const [isSending, setIsSending] = useState(false)
-  const [activeTab, setActiveTab] = useState("chat")
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const recognitionRef = useRef<any>(null)
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [activeTab, setActiveTab] = useState("chat");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
 
   const quickActions = [
     { text: "Find Amala spots near me", icon: MapPin, category: "search" },
     { text: "What makes authentic Amala?", icon: Lightbulb, category: "info" },
-    { text: "Best rated Amala restaurants", icon: Star, category: "recommendations" },
-    { text: "Submit a new location", icon: CheckCircle, category: "contribute" },
+    {
+      text: "Best rated Amala restaurants",
+      icon: Star,
+      category: "recommendations",
+    },
+    {
+      text: "Submit a new location",
+      icon: CheckCircle,
+      category: "contribute",
+    },
     { text: "Traditional vs modern Amala", icon: Bot, category: "info" },
     { text: "Amala with gbegiri and ewedu", icon: Search, category: "search" },
-  ]
+  ];
 
   const conversationStarters = [
     "I'm craving authentic Amala, where should I go?",
@@ -81,45 +89,46 @@ export default function AIAssistantPage() {
     "I want to try Amala for the first time, any recommendations?",
     "Are there any Amala spots with live music or cultural events?",
     "What should I order with my Amala?",
-  ]
+  ];
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && "webkitSpeechRecognition" in window) {
-      const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition
-      recognitionRef.current = new SpeechRecognition()
+      const SpeechRecognition =
+        window.webkitSpeechRecognition || window.SpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
 
       if (recognitionRef.current) {
-        recognitionRef.current.continuous = false
-        recognitionRef.current.interimResults = false
-        recognitionRef.current.lang = "en-US"
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = false;
+        recognitionRef.current.lang = "en-US";
 
         recognitionRef.current.onresult = (event: any) => {
-          const transcript = event.results[0][0].transcript
-          setInputValue(transcript)
-          setIsRecording(false)
-        }
+          const transcript = event.results[0][0].transcript;
+          setInputValue(transcript);
+          setIsRecording(false);
+        };
 
         recognitionRef.current.onerror = () => {
-          setIsRecording(false)
-        }
+          setIsRecording(false);
+        };
 
         recognitionRef.current.onend = () => {
-          setIsRecording(false)
-        }
+          setIsRecording(false);
+        };
       }
     }
-  }, [])
+  }, []);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || isSending) return
+    if (!inputValue.trim() || isSending) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -127,15 +136,15 @@ export default function AIAssistantPage() {
       sender: "user",
       timestamp: new Date(),
       type: "text",
-    }
+    };
 
-    setMessages((prev) => [...prev, userMessage])
-    const currentInput = inputValue
-    setInputValue("")
-    setIsSending(true)
+    setMessages((prev) => [...prev, userMessage]);
+    const currentInput = inputValue;
+    setInputValue("");
+    setIsSending(true);
 
     try {
-      console.log("[v0] Sending AI assistant message:", currentInput)
+      console.log(" Sending AI assistant message:", currentInput);
 
       const response = await fetch("/api/ai-assistant", {
         method: "POST",
@@ -147,27 +156,29 @@ export default function AIAssistantPage() {
           context: "ai_assistant",
           conversationHistory: messages.slice(-5), // Last 5 messages for context
         }),
-      })
+      });
 
       if (response.ok) {
-        const data = await response.json()
-        console.log("[v0] AI assistant response:", data)
+        const data = await response.json();
+        console.log(" AI assistant response:", data);
 
         const agentMessage: Message = {
           id: (Date.now() + 1).toString(),
-          content: data.response || "I'm here to help you discover amazing Amala spots!",
+          content:
+            data.response ||
+            "I'm here to help you discover amazing Amala spots!",
           sender: "agent",
           timestamp: new Date(),
           type: data.type || "text",
           data: data.data,
-        }
+        };
 
-        setMessages((prev) => [...prev, agentMessage])
+        setMessages((prev) => [...prev, agentMessage]);
       } else {
-        throw new Error("Failed to get AI response")
+        throw new Error("Failed to get AI response");
       }
     } catch (error) {
-      console.error("[v0] AI assistant error:", error)
+      console.error(" AI assistant error:", error);
 
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -176,90 +187,111 @@ export default function AIAssistantPage() {
         sender: "agent",
         timestamp: new Date(),
         type: "text",
-      }
+      };
 
-      setMessages((prev) => [...prev, errorMessage])
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
-      setIsSending(false)
+      setIsSending(false);
     }
-  }
+  };
 
   const handleQuickAction = (actionText: string) => {
-    setInputValue(actionText)
-  }
+    setInputValue(actionText);
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
+      e.preventDefault();
+      handleSendMessage();
     }
-  }
+  };
 
   const toggleRecording = () => {
     if (!recognitionRef.current) {
-      alert("Speech recognition is not supported in your browser.")
-      return
+      alert("Speech recognition is not supported in your browser.");
+      return;
     }
 
     if (isRecording) {
-      recognitionRef.current.stop()
-      setIsRecording(false)
+      recognitionRef.current.stop();
+      setIsRecording(false);
     } else {
-      recognitionRef.current.start()
-      setIsRecording(true)
+      recognitionRef.current.start();
+      setIsRecording(true);
     }
-  }
+  };
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-  }
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
 
   const renderMessageContent = (message: Message) => {
-    const content = message.content.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    const content = message.content.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
 
     if (message.type === "location_suggestion" && message.data?.suggestions) {
       return (
         <div className="space-y-3">
-          <div dangerouslySetInnerHTML={{ __html: content }} className="whitespace-pre-wrap mb-4" />
+          <div
+            dangerouslySetInnerHTML={{ __html: content }}
+            className="whitespace-pre-wrap mb-4"
+          />
           <div className="grid gap-3">
-            {message.data.suggestions.slice(0, 3).map((spot: LocationSuggestion, index: number) => (
-              <Card key={index} className="border border-border/50">
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-semibold text-sm">{spot.name}</h4>
-                    <Badge variant="secondary" className="text-xs">
-                      {spot.confidence}% match
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-2">{spot.address}</p>
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{spot.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-xs">
-                      <span className="flex items-center">
-                        <Star className="h-3 w-3 mr-1 fill-yellow-400 text-yellow-400" />
-                        {spot.rating}
-                      </span>
-                      <span>{spot.priceRange}</span>
-                      <span className="flex items-center">
-                        <MapPin className="h-3 w-3 mr-1" />
-                        {spot.distance}
-                      </span>
+            {message.data.suggestions
+              .slice(0, 3)
+              .map((spot: LocationSuggestion, index: number) => (
+                <Card key={index} className="border border-border/50">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="font-semibold text-sm">{spot.name}</h4>
+                      <Badge variant="secondary" className="text-xs">
+                        {spot.confidence}% match
+                      </Badge>
                     </div>
-                    <Button size="sm" variant="outline" className="h-7 text-xs bg-transparent">
-                      <Navigation className="h-3 w-3 mr-1" />
-                      View
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    <p className="text-xs text-muted-foreground mb-2">
+                      {spot.address}
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                      {spot.description}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2 text-xs">
+                        <span className="flex items-center">
+                          <Star className="h-3 w-3 mr-1 fill-yellow-400 text-yellow-400" />
+                          {spot.rating}
+                        </span>
+                        <span>{spot.priceRange}</span>
+                        <span className="flex items-center">
+                          <MapPin className="h-3 w-3 mr-1" />
+                          {spot.distance}
+                        </span>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 text-xs bg-transparent"
+                      >
+                        <Navigation className="h-3 w-3 mr-1" />
+                        View
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
           </div>
         </div>
-      )
+      );
     }
 
-    return <div dangerouslySetInnerHTML={{ __html: content }} className="whitespace-pre-wrap" />
-  }
+    return (
+      <div
+        dangerouslySetInnerHTML={{ __html: content }}
+        className="whitespace-pre-wrap"
+      />
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -280,8 +312,12 @@ export default function AIAssistantPage() {
                   <Bot className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-heading font-bold text-foreground">AI Assistant</h1>
-                  <p className="text-caption hidden sm:block">Your intelligent Amala discovery companion</p>
+                  <h1 className="text-heading font-bold text-foreground">
+                    AI Assistant
+                  </h1>
+                  <p className="text-caption hidden sm:block">
+                    Your intelligent Amala discovery companion
+                  </p>
                 </div>
               </div>
             </div>
@@ -297,7 +333,11 @@ export default function AIAssistantPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="chat">AI Chat</TabsTrigger>
             <TabsTrigger value="discover">Discover</TabsTrigger>
@@ -312,7 +352,9 @@ export default function AIAssistantPage() {
                     <Bot className="h-4 w-4 text-primary-foreground" />
                   </div>
                   <div>
-                    <h2 className="font-semibold text-card-foreground">Amala AI Assistant</h2>
+                    <h2 className="font-semibold text-card-foreground">
+                      Amala AI Assistant
+                    </h2>
                     <p className="text-xs text-muted-foreground">
                       Ask me anything about Amala spots and Nigerian cuisine
                     </p>
@@ -324,21 +366,28 @@ export default function AIAssistantPage() {
                 {messages.map((message) => (
                   <div
                     key={message.id}
-                    className={cn("flex", message.sender === "user" ? "justify-end" : "justify-start")}
+                    className={cn(
+                      "flex",
+                      message.sender === "user"
+                        ? "justify-end"
+                        : "justify-start"
+                    )}
                   >
                     <div
                       className={cn(
                         "max-w-[85%] rounded-2xl px-4 py-3 shadow-sm animate-fade-in",
                         message.sender === "user"
                           ? "bg-primary text-primary-foreground ml-4 rounded-br-md"
-                          : "bg-card text-card-foreground border border-border mr-4 rounded-bl-md",
+                          : "bg-card text-card-foreground border border-border mr-4 rounded-bl-md"
                       )}
                     >
                       {renderMessageContent(message)}
                       <div
                         className={cn(
                           "text-xs mt-2 opacity-70",
-                          message.sender === "user" ? "text-primary-foreground" : "text-muted-foreground",
+                          message.sender === "user"
+                            ? "text-primary-foreground"
+                            : "text-muted-foreground"
                         )}
                       >
                         {formatTime(message.timestamp)}
@@ -362,7 +411,9 @@ export default function AIAssistantPage() {
                             style={{ animationDelay: "0.2s" }}
                           ></div>
                         </div>
-                        <span className="text-sm text-muted-foreground">AI is thinking...</span>
+                        <span className="text-sm text-muted-foreground">
+                          AI is thinking...
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -373,10 +424,12 @@ export default function AIAssistantPage() {
 
               {messages.length === 1 && (
                 <div className="px-4 pb-2 border-t border-border">
-                  <p className="text-xs text-muted-foreground mb-3 mt-3">Quick actions:</p>
+                  <p className="text-xs text-muted-foreground mb-3 mt-3">
+                    Quick actions:
+                  </p>
                   <div className="grid grid-cols-2 gap-2">
                     {quickActions.map((action, index) => {
-                      const IconComponent = action.icon
+                      const IconComponent = action.icon;
                       return (
                         <Button
                           key={index}
@@ -388,7 +441,7 @@ export default function AIAssistantPage() {
                           <IconComponent className="h-3 w-3 mr-2" />
                           {action.text}
                         </Button>
-                      )
+                      );
                     })}
                   </div>
                 </div>
@@ -414,11 +467,15 @@ export default function AIAssistantPage() {
                     className={cn(
                       "shrink-0 rounded-xl border-border",
                       isRecording &&
-                        "bg-destructive text-destructive-foreground hover:bg-destructive/90 border-destructive",
+                        "bg-destructive text-destructive-foreground hover:bg-destructive/90 border-destructive"
                     )}
                     disabled={isSending}
                   >
-                    {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    {isRecording ? (
+                      <MicOff className="h-4 w-4" />
+                    ) : (
+                      <Mic className="h-4 w-4" />
+                    )}
                   </Button>
 
                   <Button
@@ -460,8 +517,8 @@ export default function AIAssistantPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                          setActiveTab("chat")
-                          setInputValue(starter)
+                          setActiveTab("chat");
+                          setInputValue(starter);
                         }}
                         className="w-full justify-start text-xs h-auto py-2 px-3"
                       >
@@ -480,14 +537,18 @@ export default function AIAssistantPage() {
                   </h3>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-sm text-muted-foreground">Get AI-powered suggestions based on your preferences</p>
+                  <p className="text-sm text-muted-foreground">
+                    Get AI-powered suggestions based on your preferences
+                  </p>
                   <div className="space-y-2">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setActiveTab("chat")
-                        setInputValue("Recommend Amala spots based on my preferences")
+                        setActiveTab("chat");
+                        setInputValue(
+                          "Recommend Amala spots based on my preferences"
+                        );
                       }}
                       className="w-full"
                     >
@@ -497,8 +558,10 @@ export default function AIAssistantPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setActiveTab("chat")
-                        setInputValue("What's trending in Amala spots this week?")
+                        setActiveTab("chat");
+                        setInputValue(
+                          "What's trending in Amala spots this week?"
+                        );
                       }}
                       className="w-full"
                     >
@@ -521,7 +584,8 @@ export default function AIAssistantPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    Learn about authentic Amala preparation, ingredients, and cultural significance
+                    Learn about authentic Amala preparation, ingredients, and
+                    cultural significance
                   </p>
                   <div className="space-y-2">
                     {[
@@ -535,8 +599,8 @@ export default function AIAssistantPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                          setActiveTab("chat")
-                          setInputValue(topic)
+                          setActiveTab("chat");
+                          setInputValue(topic);
                         }}
                         className="w-full justify-start text-xs"
                       >
@@ -556,7 +620,8 @@ export default function AIAssistantPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    Understand what makes a great Amala spot and how we verify authenticity
+                    Understand what makes a great Amala spot and how we verify
+                    authenticity
                   </p>
                   <div className="space-y-2">
                     {[
@@ -570,8 +635,8 @@ export default function AIAssistantPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                          setActiveTab("chat")
-                          setInputValue(topic)
+                          setActiveTab("chat");
+                          setInputValue(topic);
                         }}
                         className="w-full justify-start text-xs"
                       >
@@ -586,5 +651,5 @@ export default function AIAssistantPage() {
         </Tabs>
       </main>
     </div>
-  )
+  );
 }

@@ -19,22 +19,21 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "Amala Locations - Find Authentic Amala Spots",
+  title: "Amala Atlas - Find Authentic Amala Spots",
   description:
     "Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
-  generator: "v0.app",
-  applicationName: "Amala Locations",
+  applicationName: "Amala Atlas",
   referrer: "origin-when-cross-origin",
   keywords: ["amala", "restaurants", "food", "locations", "map", "authentic", "nigerian food"],
-  authors: [{ name: "Amala Locations Team" }],
-  creator: "Amala Locations",
-  publisher: "Amala Locations",
+  authors: [{ name: "Amala Atlas Team" }],
+  creator: "Amala Atlas",
+  publisher: "Amala Atlas",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://amala-locations.vercel.app"),
+  metadataBase: new URL("https://amalaatlas.vercel.app"),
   alternates: {
     canonical: "/",
   },
@@ -44,7 +43,7 @@ export const metadata: Metadata = {
     title: "Amala Locations - Find Authentic Amala Spots",
     description:
       "Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
-    url: "https://amala-locations.vercel.app",
+    url: "https://amalaatlas.vercel.app",
     images: [
       {
         url: "/og-image.jpg",
@@ -56,7 +55,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Amala Locations - Find Authentic Amala Spots",
+    title: "Amala Atlas - Find Authentic Amala Spots",
     description:
       "Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
     images: ["/og-image.jpg"],
@@ -64,7 +63,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Amala Locations",
+    title: "Amala Atlas",
   },
   manifest: "/manifest.json",
 }

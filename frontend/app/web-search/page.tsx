@@ -1,39 +1,39 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Search, ExternalLink, Star, Globe } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Search, ExternalLink, Star, Globe } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface WebSearchResult {
-  title: string
-  url: string
-  snippet: string
-  relevanceScore: number
-  source: string
-  type: "restaurant" | "review" | "directory" | "social"
+  title: string;
+  url: string;
+  snippet: string;
+  relevanceScore: number;
+  source: string;
+  type: "restaurant" | "review" | "directory" | "social";
 }
 
 export default function WebSearchPage() {
-  const router = useRouter()
-  const [searchQuery, setSearchQuery] = useState("")
-  const [isSearching, setIsSearching] = useState(false)
-  const [results, setResults] = useState<WebSearchResult[]>([])
-  const [searchTime, setSearchTime] = useState("")
-  const [totalResults, setTotalResults] = useState(0)
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [results, setResults] = useState<WebSearchResult[]>([]);
+  const [searchTime, setSearchTime] = useState("");
+  const [totalResults, setTotalResults] = useState(0);
 
   const handleSearch = async () => {
-    if (!searchQuery.trim() || isSearching) return
+    if (!searchQuery.trim() || isSearching) return;
 
-    setIsSearching(true)
-    console.log("[v0] Starting web search for:", searchQuery)
+    setIsSearching(true);
+    console.log(" Starting web search for:", searchQuery);
 
     try {
       const response = await fetch("/api/web-search", {
@@ -46,62 +46,62 @@ export default function WebSearchPage() {
           location: "Brooklyn, NY",
           type: "restaurants",
         }),
-      })
+      });
 
       if (response.ok) {
-        const data = await response.json()
-        console.log("[v0] Web search completed:", data)
+        const data = await response.json();
+        console.log(" Web search completed:", data);
 
-        setResults(data.results || [])
-        setSearchTime(data.searchTime || "")
-        setTotalResults(data.totalResults || 0)
+        setResults(data.results || []);
+        setSearchTime(data.searchTime || "");
+        setTotalResults(data.totalResults || 0);
       } else {
-        throw new Error("Web search failed")
+        throw new Error("Web search failed");
       }
     } catch (error) {
-      console.error("[v0] Web search error:", error)
-      setResults([])
+      console.error(" Web search error:", error);
+      setResults([]);
     } finally {
-      setIsSearching(false)
+      setIsSearching(false);
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      e.preventDefault()
-      handleSearch()
+      e.preventDefault();
+      handleSearch();
     }
-  }
+  };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "restaurant":
-        return <Star className="h-3 w-3" />
+        return <Star className="h-3 w-3" />;
       case "review":
-        return <Star className="h-3 w-3" />
+        return <Star className="h-3 w-3" />;
       case "directory":
-        return <Globe className="h-3 w-3" />
+        return <Globe className="h-3 w-3" />;
       case "social":
-        return <Globe className="h-3 w-3" />
+        return <Globe className="h-3 w-3" />;
       default:
-        return <Globe className="h-3 w-3" />
+        return <Globe className="h-3 w-3" />;
     }
-  }
+  };
 
   const getTypeColor = (type: string) => {
     switch (type) {
       case "restaurant":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "review":
-        return "bg-blue-100 text-blue-800"
+        return "bg-blue-100 text-blue-800";
       case "directory":
-        return "bg-purple-100 text-purple-800"
+        return "bg-purple-100 text-purple-800";
       case "social":
-        return "bg-orange-100 text-orange-800"
+        return "bg-orange-100 text-orange-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -122,8 +122,12 @@ export default function WebSearchPage() {
                   <Search className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-heading font-bold text-foreground">Web Search</h1>
-                  <p className="text-caption hidden sm:block">Search the web for Amala restaurants and reviews</p>
+                  <h1 className="text-heading font-bold text-foreground">
+                    Web Search
+                  </h1>
+                  <p className="text-caption hidden sm:block">
+                    Search the web for Amala restaurants and reviews
+                  </p>
                 </div>
               </div>
             </div>
@@ -137,7 +141,8 @@ export default function WebSearchPage() {
             <CardHeader>
               <h2 className="text-subheading font-bold">Search the Web</h2>
               <p className="text-body text-muted-foreground">
-                Find Nigerian restaurants, reviews, and Amala spots from across the internet
+                Find Nigerian restaurants, reviews, and Amala spots from across
+                the internet
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -203,7 +208,11 @@ export default function WebSearchPage() {
                   </p>
                 </div>
                 <Link href="/ai-assistant">
-                  <Button variant="outline" size="sm" className="bg-transparent">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-transparent"
+                  >
                     Try AI Search
                   </Button>
                 </Link>
@@ -211,26 +220,42 @@ export default function WebSearchPage() {
 
               <div className="space-y-4">
                 {results.map((result, index) => (
-                  <Card key={index} className="hover:shadow-md transition-shadow">
+                  <Card
+                    key={index}
+                    className="hover:shadow-md transition-shadow"
+                  >
                     <CardContent className="p-4">
                       <div className="space-y-3">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-2">
-                              <Badge className={cn("text-xs", getTypeColor(result.type))}>
+                              <Badge
+                                className={cn(
+                                  "text-xs",
+                                  getTypeColor(result.type)
+                                )}
+                              >
                                 {getTypeIcon(result.type)}
-                                <span className="ml-1 capitalize">{result.type}</span>
+                                <span className="ml-1 capitalize">
+                                  {result.type}
+                                </span>
                               </Badge>
                               <Badge variant="outline" className="text-xs">
                                 {result.relevanceScore}% match
                               </Badge>
                             </div>
                             <h4 className="text-subheading font-semibold text-primary hover:underline cursor-pointer">
-                              <a href={result.url} target="_blank" rel="noopener noreferrer">
+                              <a
+                                href={result.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
                                 {result.title}
                               </a>
                             </h4>
-                            <p className="text-caption text-muted-foreground mb-2">{result.url}</p>
+                            <p className="text-caption text-muted-foreground mb-2">
+                              {result.url}
+                            </p>
                           </div>
                           <Button
                             variant="ghost"
@@ -241,7 +266,9 @@ export default function WebSearchPage() {
                             <ExternalLink className="h-4 w-4" />
                           </Button>
                         </div>
-                        <p className="text-body text-muted-foreground">{result.snippet}</p>
+                        <p className="text-body text-muted-foreground">
+                          {result.snippet}
+                        </p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 text-caption text-muted-foreground">
                             <Globe className="h-3 w-3" />
@@ -267,7 +294,9 @@ export default function WebSearchPage() {
           {isSearching && (
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
-              <h3 className="text-subheading font-bold text-foreground mb-2">Searching the Web</h3>
+              <h3 className="text-subheading font-bold text-foreground mb-2">
+                Searching the Web
+              </h3>
               <p className="text-body text-muted-foreground">
                 Finding the best Nigerian restaurants and Amala spots online...
               </p>
@@ -277,10 +306,12 @@ export default function WebSearchPage() {
           {!isSearching && results.length === 0 && searchQuery && (
             <div className="text-center py-12">
               <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-subheading font-bold text-foreground mb-2">No Results Found</h3>
+              <h3 className="text-subheading font-bold text-foreground mb-2">
+                No Results Found
+              </h3>
               <p className="text-body text-muted-foreground mb-6">
-                Try different keywords or check your spelling. You can also try our AI-powered search for better
-                results.
+                Try different keywords or check your spelling. You can also try
+                our AI-powered search for better results.
               </p>
               <Link href="/ai-assistant">
                 <Button className="bg-primary hover:bg-primary/90">
@@ -293,5 +324,5 @@ export default function WebSearchPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

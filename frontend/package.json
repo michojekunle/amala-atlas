@@ -9,7 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@ai-sdk/groq": "latest",
+    "@ai-sdk/google": "^2.0.14",
     "@googlemaps/js-api-loader": "latest",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "1.2.2",
@@ -67,7 +67,6 @@
     "vaul": "^0.9.9",
     "vue": "latest",
     "vue-router": "latest",
-  
     "workbox-expiration": "latest",
     "workbox-precaching": "latest",
     "workbox-routing": "latest",

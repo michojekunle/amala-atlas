@@ -216,7 +216,7 @@ export function GoogleMap({
     // Find and highlight the selected marker
     const selectedMarker = markersRef.current.find((marker) => {
       const position = marker.getPosition()
-      return position.lat() === selectedLocation.lat && position.lng() === selectedLocation.lng
+      return position?.lat() === selectedLocation.lat && position.lng() === selectedLocation.lng
     })
 
     if (selectedMarker) {
