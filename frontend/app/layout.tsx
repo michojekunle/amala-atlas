@@ -1,40 +1,40 @@
-import type React from "react"
-import type { Metadata, Viewport } from "next"
-import { Analytics } from "@vercel/analytics/next"
-import "./globals.css"
-import { Suspense } from "react"
-import { Space_Grotesk } from "next/font/google"
-import { DM_Sans } from "next/font/google"
+import type React from "react";
+import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import "./globals.css";
+import { Suspense } from "react";
+import { Space_Grotesk } from "next/font/google";
+import { DM_Sans } from "next/font/google";
+import Provider from "./provider";
 
 const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-})
+	subsets: ["latin"],
+	variable: "--font-space-grotesk",
+	display: "swap",
+});
 
 const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
-  display: "swap",
-})
+	subsets: ["latin"],
+	variable: "--font-dm-sans",
+	display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Amala Locations - Find Authentic Amala Spots",
+  title: "Amala Atlas - Find Authentic Amala Spots",
   description:
     "Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
-  generator: "v0.app",
-  applicationName: "Amala Locations",
+  applicationName: "Amala Atlas",
   referrer: "origin-when-cross-origin",
   keywords: ["amala", "restaurants", "food", "locations", "map", "authentic", "nigerian food"],
-  authors: [{ name: "Amala Locations Team" }],
-  creator: "Amala Locations",
-  publisher: "Amala Locations",
+  authors: [{ name: "Amala Atlas Team" }],
+  creator: "Amala Atlas",
+  publisher: "Amala Atlas",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://amala-locations.vercel.app"),
+  metadataBase: new URL("https://amalaatlas.vercel.app"),
   alternates: {
     canonical: "/",
   },
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: "Amala Locations - Find Authentic Amala Spots",
     description:
       "Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
-    url: "https://amala-locations.vercel.app",
+    url: "https://amalaatlas.vercel.app",
     images: [
       {
         url: "/og-image.jpg",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Amala Locations - Find Authentic Amala Spots",
+    title: "Amala Atlas - Find Authentic Amala Spots",
     description:
       "Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
     images: ["/og-image.jpg"],
@@ -64,49 +64,65 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Amala Locations",
+    title: "Amala Atlas",
   },
   manifest: "/manifest.json",
 }
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-  ],
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  viewportFit: "cover",
-}
+	themeColor: [
+		{ media: "(prefers-color-scheme: light)", color: "#ffffff" },
+		{ media: "(prefers-color-scheme: dark)", color: "#0f172a" },
+	],
+	width: "device-width",
+	initialScale: 1,
+	maximumScale: 1,
+	userScalable: false,
+	viewportFit: "cover",
+};
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <head>
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Amala Locations" />
-        <meta name="msapplication-TileColor" content="#2563eb" />
-        <meta name="msapplication-config" content="/browserconfig.xml" />
+	return (
+		<html lang="en">
+			<head>
+				<meta name="mobile-web-app-capable" content="yes" />
+				<meta name="apple-mobile-web-app-capable" content="yes" />
+				<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+				<meta name="apple-mobile-web-app-title" content="Amala Locations" />
+				<meta name="msapplication-TileColor" content="#2563eb" />
+				<meta name="msapplication-config" content="/browserconfig.xml" />
 
-        {/* Apple Touch Icons */}
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.jpg" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.jpg" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.jpg" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2563eb" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-      </head>
-      <body className={`font-sans ${spaceGrotesk.variable} ${dmSans.variable}`}>
-        <Suspense fallback={null}>{children}</Suspense>
-        <Analytics />
-      </body>
-    </html>
-  )
+				{/* Apple Touch Icons */}
+				<link
+					rel="apple-touch-icon"
+					sizes="180x180"
+					href="/apple-touch-icon.jpg"
+				/>
+				<link
+					rel="icon"
+					type="image/png"
+					sizes="32x32"
+					href="/favicon-32x32.jpg"
+				/>
+				<link
+					rel="icon"
+					type="image/png"
+					sizes="16x16"
+					href="/favicon-16x16.jpg"
+				/>
+				<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2563eb" />
+				<link rel="shortcut icon" href="/favicon.ico" />
+			</head>
+			<body className={`font-sans ${spaceGrotesk.variable} ${dmSans.variable}`}>
+				<Provider>
+					<Suspense fallback={null}>{children}</Suspense>
+					<Analytics />
+				</Provider>
+			</body>
+		</html>
+	);
 }

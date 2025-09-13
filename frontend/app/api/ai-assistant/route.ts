@@ -1,33 +1,36 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { generateText } from "ai"
-import { createGroq } from "@ai-sdk/groq"
+import { type NextRequest, NextResponse } from "next/server";
+import { generateText } from "ai";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
-const groq = createGroq({
-  apiKey: process.env.GROQ_API_KEY,
-})
+const googleAI = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_AI_API_KEY,
+});
 
 interface AssistantRequest {
-  message: string
-  context: string
-  conversationHistory?: any[]
+  message: string;
+  context: string;
+  conversationHistory?: any[];
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body: AssistantRequest = await request.json()
-    const { message, context, conversationHistory = [] } = body
+    const body: AssistantRequest = await request.json();
+    const { message, context, conversationHistory = [] } = body;
 
     if (!message) {
-      return NextResponse.json({ success: false, error: "Message is required" }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: "Message is required" },
+        { status: 400 }
+      );
     }
 
-    console.log("[v0] AI Assistant processing:", message)
+    console.log(" AI Assistant processing:", message);
 
     // Build conversation context
     const historyContext = conversationHistory
       .slice(-3)
       .map((msg: any) => `${msg.sender}: ${msg.content}`)
-      .join("\n")
+      .join("\n");
 
     const assistantPrompt = `
 You are an expert AI assistant specializing in Nigerian Amala restaurants and authentic Yoruba cuisine. You help users discover, learn about, and enjoy authentic Amala experiences.
@@ -67,37 +70,40 @@ Respond in JSON format:
   "type": "text|location_suggestion|search_results|recommendation",
   "data": {optional data object for special response types}
 }
-`
+`;
 
     const { text } = await generateText({
-      model: groq("llama-3.1-70b-versatile"),
+      model: googleAI("gemini-pro"),
       prompt: assistantPrompt,
       temperature: 0.7,
-    })
+    });
 
-    let aiResponse
+    let aiResponse;
     try {
-      aiResponse = JSON.parse(text)
+      aiResponse = JSON.parse(text);
     } catch (parseError) {
-      console.error("[v0] AI response parsing error:", parseError)
+      console.error(" AI response parsing error:", parseError);
       // Fallback response
       aiResponse = {
         response:
           "I'm here to help you discover amazing Amala spots! What would you like to know about authentic Nigerian cuisine?",
         type: "text",
-      }
+      };
     }
 
-    console.log("[v0] AI Assistant response generated:", aiResponse.type)
+    console.log(" AI Assistant response generated:", aiResponse.type);
 
     return NextResponse.json({
       success: true,
       response: aiResponse.response,
       type: aiResponse.type,
       data: aiResponse.data,
-    })
+    });
   } catch (error) {
-    console.error("[v0] AI Assistant error:", error)
-    return NextResponse.json({ success: false, error: "Failed to process AI request" }, { status: 500 })
+    console.error(" AI Assistant error:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to process AI request" },
+      { status: 500 }
+    );
   }
 }

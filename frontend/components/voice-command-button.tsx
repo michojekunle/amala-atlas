@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Mic, MicOff, Volume2 } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useVoiceCommands } from "@/hooks/use-voice-commands"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Mic, MicOff, Volume2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useVoiceCommands } from "@/hooks/use-voice-commands";
 
 interface VoiceCommandButtonProps {
-  onTranscript?: (transcript: string) => void
-  onCommand?: (command: string) => void
-  className?: string
-  size?: "sm" | "default" | "lg" | "icon"
-  variant?: "default" | "outline" | "ghost"
+  onTranscript?: (transcript: string) => void;
+  onCommand?: (command: string) => void;
+  className?: string;
+  size?: "sm" | "default" | "lg" | "icon";
+  variant?: "default" | "outline" | "ghost";
   commands?: Array<{
-    command: string
-    pattern: RegExp
-    action: () => void
-    description: string
-  }>
+    command: string;
+    pattern: RegExp;
+    action: () => void;
+    description: string;
+  }>;
 }
 
 export function VoiceCommandButton({
@@ -29,43 +29,50 @@ export function VoiceCommandButton({
   variant = "outline",
   commands = [],
 }: VoiceCommandButtonProps) {
-  const [showCommands, setShowCommands] = useState(false)
+  const [showCommands, setShowCommands] = useState(false);
 
-  const { isListening, isSupported, transcript, startListening, stopListening, addCommand, clearCommands } =
-    useVoiceCommands({
-      onResult: (transcript) => {
-        onTranscript?.(transcript)
-      },
-      onError: (error) => {
-        console.error("[v0] Voice command error:", error)
-      },
-    })
+  const {
+    isListening,
+    isSupported,
+    transcript,
+    startListening,
+    stopListening,
+    addCommand,
+    clearCommands,
+  } = useVoiceCommands({
+    onResult: (transcript) => {
+      onTranscript?.(transcript);
+    },
+    onError: (error) => {
+      console.error(" Voice command error:", error);
+    },
+  });
 
   useEffect(() => {
-    clearCommands()
+    clearCommands();
     commands.forEach((cmd) => {
       addCommand({
         command: cmd.command,
         pattern: cmd.pattern,
         action: () => {
-          cmd.action()
-          onCommand?.(cmd.command)
+          cmd.action();
+          onCommand?.(cmd.command);
         },
         description: cmd.description,
-      })
-    })
-  }, [commands, addCommand, clearCommands, onCommand])
+      });
+    });
+  }, [commands, addCommand, clearCommands, onCommand]);
 
   const toggleListening = () => {
     if (isListening) {
-      stopListening()
+      stopListening();
     } else {
-      startListening()
+      startListening();
     }
-  }
+  };
 
   if (!isSupported) {
-    return null
+    return null;
   }
 
   return (
@@ -76,14 +83,21 @@ export function VoiceCommandButton({
         size={size}
         className={cn(
           "transition-all duration-200",
-          isListening && "bg-destructive text-destructive-foreground hover:bg-destructive/90 border-destructive",
-          className,
+          isListening &&
+            "bg-destructive text-destructive-foreground hover:bg-destructive/90 border-destructive",
+          className
         )}
         onMouseEnter={() => setShowCommands(true)}
         onMouseLeave={() => setShowCommands(false)}
       >
-        {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-        {size !== "icon" && <span className="ml-2">{isListening ? "Stop" : "Voice"}</span>}
+        {isListening ? (
+          <MicOff className="h-4 w-4" />
+        ) : (
+          <Mic className="h-4 w-4" />
+        )}
+        {size !== "icon" && (
+          <span className="ml-2">{isListening ? "Stop" : "Voice"}</span>
+        )}
       </Button>
 
       {isListening && transcript && (
@@ -112,11 +126,13 @@ export function VoiceCommandButton({
               </div>
             ))}
             {commands.length > 4 && (
-              <p className="text-xs text-muted-foreground">+{commands.length - 4} more commands...</p>
+              <p className="text-xs text-muted-foreground">
+                +{commands.length - 4} more commands...
+              </p>
             )}
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
