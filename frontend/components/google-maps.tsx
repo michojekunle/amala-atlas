@@ -101,6 +101,7 @@ export function GoogleMaps({
     // Cleanup function
     return () => {
       if (window.initMap) {
+        // @ts-ignore
         delete window?.initMap
       }
     }
@@ -238,7 +239,7 @@ export function GoogleMaps({
           title: spot.name,
           icon: {
             path: window.google.maps.SymbolPath.CIRCLE,
-            scale: 8,
+            scale: 12,
             fillColor:
               spot.verificationStatus === "verified"
                 ? "#10B981"
@@ -263,14 +264,14 @@ export function GoogleMaps({
         marker.addListener("mouseover", () => {
           marker.setIcon({
             ...marker.getIcon(),
-            scale: 12,
+            scale: 16,
           })
         })
 
         marker.addListener("mouseout", () => {
           marker.setIcon({
             ...marker.getIcon(),
-            scale: 8,
+            scale: 12,
           })
         })
 
