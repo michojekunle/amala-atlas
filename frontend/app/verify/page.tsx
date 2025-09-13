@@ -11,10 +11,12 @@ import Image from "next/image";
 import { PendingSpot, mockPendingSpots } from "../utils/mock";
 import useAPIFetch from "@/app/hooks/use-api-fetch";
 import postData from "../hooks/use-api-post";
+import { useRouter } from "next/navigation";
 
 export default function PendingSpotsPage() {
 	const [pendingSpots, setPendingSpots] =
 		useState<PendingSpot[]>(mockPendingSpots);
+	const router = useRouter();
 	const [selectedSpot, setSelectedSpot] = useState<PendingSpot | null>(
 		pendingSpots[0]
 	);
@@ -37,6 +39,7 @@ export default function PendingSpotsPage() {
 		if (spotToPost) {
 			const response = postData<PendingSpot>("/verify/", [""], spotToPost);
 			console.log("Spot Created");
+			router.push("/");
 		}
 		if (selectedSpot?.id === spotId) {
 			const remainingSpots = pendingSpots.filter((spot) => spot.id !== spotId);
