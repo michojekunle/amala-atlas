@@ -76,3 +76,94 @@ export const mockSpot: AmalaSspot = {
 		},
 	],
 };
+
+export interface PendingSpot {
+	id: string;
+	name: string;
+	raw_address: string;
+	lat: number;
+	lng: number;
+	description: string;
+	category: string;
+	photo_url: string;
+	submittedBy: string;
+	submittedDate: string;
+	website?: string;
+	phone?: string;
+	status: "pending";
+}
+
+export const mockPendingSpots: PendingSpot[] = [
+	{
+		id: "1",
+		name: "Amala Hotspot",
+		raw_address: "Agege, Lagos State",
+		lat: 6.6158,
+		lng: 3.3417,
+		description:
+			"Vorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.",
+		category: "Restaurant",
+		photo_url: "/traditional-nigerian-amala-restaurant-interior.jpg",
+		submittedBy: "Community Scout",
+		submittedDate: "2024-03-15",
+		website: "https://amalahotspot.com",
+		phone: "+234 801 234 5678",
+		status: "pending",
+	},
+	{
+		id: "2",
+		name: "Ile Amala",
+		raw_address: "Agege, Lagos State",
+		lat: 6.62,
+		lng: 3.345,
+		description:
+			"Traditional Yoruba cuisine with authentic amala preparation methods passed down through generations.",
+		category: "Restaurant",
+		photo_url: "/homestyle-nigerian-kitchen-amala-preparation.jpg",
+		submittedBy: "User: @foodie_lagos",
+		submittedDate: "2024-03-14",
+		status: "pending",
+	},
+	{
+		id: "3",
+		name: "Ile Amala",
+		raw_address: "Agege, Lagos State",
+		lat: 6.618,
+		lng: 3.34,
+		description:
+			"Family-owned restaurant specializing in traditional Nigerian dishes with focus on quality amala.",
+		category: "Restaurant",
+		photo_url: "/vibrant-nigerian-restaurant-cultural-atmosphere.jpg",
+		submittedBy: "Restaurant Owner",
+		submittedDate: "2024-03-13",
+		status: "pending",
+	},
+	{
+		id: "4",
+		name: "Ile Amala",
+		raw_address: "Agege, Lagos State",
+		lat: 6.622,
+		lng: 3.338,
+		description:
+			"Modern take on traditional amala with contemporary dining experience and authentic flavors.",
+		category: "Restaurant",
+		photo_url: "/modern-nigerian-restaurant-amala-dish.jpg",
+		submittedBy: "Community",
+		submittedDate: "2024-03-12",
+		status: "pending",
+	},
+	{
+		id: "5",
+		name: "Ile Amala",
+		raw_address: "Agege, Lagos State",
+		lat: 6.616,
+		lng: 3.342,
+		description:
+			"Authentic Nigerian restaurant known for exceptional amala and traditional Yoruba hospitality.",
+		category: "Restaurant",
+		photo_url: "/traditional-nigerian-amala-restaurant-interior.jpg",
+		submittedBy: "Local Guide",
+		submittedDate: "2024-03-11",
+		status: "pending",
+	},
+];
