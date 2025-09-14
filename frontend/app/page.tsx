@@ -5,17 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  Moon,
-  Sun,
-  Search,
-  Filter,
-  Plus,
-  Utensils,
-  Globe,
-  Map,
-  List,
-} from "lucide-react";
+import { Search, Plus, Utensils, Map, List, Globe } from "lucide-react";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 import { OfflineIndicator } from "@/components/offline-indicator";
 import { VoiceCommandButton } from "@/components/voice-command-button";
@@ -135,9 +125,7 @@ export default function AmalaSpotsList() {
     },
   ]);
 
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterOpen, setFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState<"distance" | "rating" | "newest">(
     "distance"
   );
@@ -201,23 +189,7 @@ export default function AmalaSpotsList() {
       },
       description: "Open AI assistant",
     },
-    {
-      command: "toggle dark mode",
-      pattern: /dark mode|light mode|toggle theme/i,
-      action: () => {
-        setIsDarkMode(!isDarkMode);
-      },
-      description: "Toggle dark/light mode",
-    },
   ];
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
 
   const toggleFavorite = (spotId: string) => {
     setSpots((prev) =>
@@ -340,61 +312,6 @@ export default function AmalaSpotsList() {
       <PWAInstallPrompt />
       <OfflineIndicator />
 
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-sm">
-                <Utensils className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-heading font-bold text-foreground">
-                  Amala Atlas
-                </h1>
-                <p className="text-caption hidden sm:block">
-                  Discover authentic Amala experiences
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Link href="/web-search">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="hidden md:flex bg-transparent"
-                >
-                  <Globe className="h-4 w-4 mr-2" />
-                  Web Search
-                </Button>
-              </Link>
-              <Link href="/ai-assistant">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="hidden sm:flex bg-transparent"
-                >
-                  <Search className="h-4 w-4 mr-2" />
-                  AI Search
-                </Button>
-              </Link>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="text-foreground hover:bg-accent"
-              >
-                {isDarkMode ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <div className="bg-muted/50 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row gap-3">
@@ -500,6 +417,28 @@ export default function AmalaSpotsList() {
                 </span>
               )}
             </p>
+          </div>
+          <div className="flex items-center justify-between gap-3 mb-6">
+            <Link href="/web-search">
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden md:flex bg-transparent"
+              >
+                <Globe className="h-4 w-4 mr-2" />
+                Web Search
+              </Button>
+            </Link>
+            <Link href="/ai-assistant">
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden sm:flex bg-transparent"
+              >
+                <Search className="h-4 w-4 mr-2" />
+                AI Search
+              </Button>
+            </Link>
           </div>
         </div>
 
