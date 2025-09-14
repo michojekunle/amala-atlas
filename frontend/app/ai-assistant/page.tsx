@@ -345,7 +345,7 @@ export default function AIAssistantPage() {
           </TabsList>
 
           <TabsContent value="chat" className="space-y-6">
-            <Card className="h-[600px] flex flex-col">
+            <Card className="h-[600px] lg:min-h-[80vh] flex flex-col">
               <CardHeader className="pb-3 border-b border-border">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
