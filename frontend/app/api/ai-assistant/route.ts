@@ -81,7 +81,12 @@ Respond in JSON format:
     let aiResponse;
     try {
       console.log("AI TEXTTTTTTTTTTTTT", text);
-      aiResponse = JSON.parse(text);
+      // Remove leading/trailing triple backticks and "json" if present
+      const cleanedText = text
+        .replace(/^\s*```json\s*([\s\S]*?)\s*```$/i, "$1")
+        .replace(/^\s*```([\s\S]*?)\s*```$/i, "$1")
+        .trim();
+      aiResponse = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error(" AI response parsing error:", parseError);
       // Fallback response
