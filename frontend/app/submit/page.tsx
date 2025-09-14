@@ -31,7 +31,7 @@ import {
 	CheckCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import postData from "../hooks/use-api-post";
+import postData from "../../hooks/use-api-post";
 import axios from "axios";
 
 interface SubmissionForm {
@@ -488,10 +488,10 @@ export default function SubmitSpotPage() {
 									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value="$">
-											$ - Budget friendly (Under $15)
+											$ - Budget friendly (Under NGN 2000)
 										</SelectItem>
-										<SelectItem value="$$">$$ - Moderate ($15-30)</SelectItem>
-										<SelectItem value="$$$">$$$ - Upscale ($30+)</SelectItem>
+										<SelectItem value="$$">$$ - Moderate (NGN 2000 - 10000)</SelectItem>
+										<SelectItem value="$$$">$$$ - Upscale (NGN 10000+)</SelectItem>
 									</SelectContent>
 								</Select>
 								{errors.priceRange && (
@@ -515,8 +515,8 @@ export default function SubmitSpotPage() {
 											className={cn(
 												"flex items-center space-x-2 p-3 rounded-lg border cursor-pointer transition-colors",
 												form.tags.includes(tag)
-													? "border-primary bg-primary/10 text-primary"
-													: "border-border hover:border-primary/50"
+													? "border-black bg-primary/10 text-primary"
+													: "border-border hover:border-black/50"
 											)}
 										>
 											<Checkbox
@@ -622,7 +622,7 @@ export default function SubmitSpotPage() {
 									"border-2 border-dashed rounded-lg p-8 text-center transition-colors",
 									errors.images
 										? "border-destructive"
-										: "border-border hover:border-primary"
+										: "border-border hover:border-black"
 								)}
 							>
 								<input
@@ -762,9 +762,9 @@ export default function SubmitSpotPage() {
 				<Card>
 					<CardContent className="p-6 sm:p-8">
 						{isVerifying && (
-							<div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-lg">
+							<div className="mb-6 p-4 bg-primary/10 border border-black/20 rounded-lg">
 								<div className="flex items-center space-x-3">
-									<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary" />
+									<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black" />
 									<div>
 										<h3 className="font-semibold text-primary">
 											AI Verification in Progress
@@ -850,7 +850,7 @@ export default function SubmitSpotPage() {
 							>
 								{isSubmitting ? (
 									<>
-										<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2" />
+										<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black-foreground mr-2" />
 										{isVerifying ? "AI Verifying..." : "Submitting..."}
 									</>
 								) : (
