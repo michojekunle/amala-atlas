@@ -33,6 +33,7 @@ import {
 import { cn } from "@/lib/utils";
 import postData from "../../hooks/use-api-post";
 import axios from "axios";
+import { toast } from "sonner";
 
 interface SubmissionForm {
 	lat: number;
@@ -170,9 +171,14 @@ export default function SubmitSpotPage() {
 						body: formData,
 					}
 				);
+				console.log("Cloudinary fecth response:", JSON.stringify(response));
+				console.log("Cloudinary response status:", response.status);
 
 				if (!response.ok) {
 					const errorData = await response.json();
+					toast.error(
+						`Upload failed: ${errorData.error?.message || "Unknown error"}`
+					);
 					throw new Error(
 						`Upload failed: ${errorData.error?.message || "Unknown error"}`
 					);
@@ -183,7 +189,7 @@ export default function SubmitSpotPage() {
 				if (!data.secure_url) {
 					throw new Error("No secure URL returned from Cloudinary");
 				}
-
+				console.log("Uploaded file URL:", data.secure_url);
 				return data.secure_url;
 			});
 
@@ -194,6 +200,7 @@ export default function SubmitSpotPage() {
 
 			uploadResults.forEach((result, index) => {
 				if (result.status === "fulfilled") {
+					console.log("Cloudinary upload result:", JSON.stringify(result));
 					uploadedUrls.push(result.value);
 				} else {
 					failedUploads.push(`File ${index + 1}: ${result.reason.message}`);
@@ -206,6 +213,8 @@ export default function SubmitSpotPage() {
 					...prev,
 					photo_urls: [...(prev.photo_urls || []), ...uploadedUrls].slice(0, 5),
 				}));
+				toast.success(`${uploadedUrls.length} image(s) uploaded successfully`);
+				console.log("form.photo_urls:", form.photo_urls);
 			}
 			if (failedUploads.length > 0) {
 				console.warn(`${failedUploads.length} uploads failed:`, failedUploads);
@@ -490,8 +499,12 @@ export default function SubmitSpotPage() {
 										<SelectItem value="$">
 											$ - Budget friendly (Under NGN 2000)
 										</SelectItem>
-										<SelectItem value="$$">$$ - Moderate (NGN 2000 - 10000)</SelectItem>
-										<SelectItem value="$$$">$$$ - Upscale (NGN 10000+)</SelectItem>
+										<SelectItem value="$$">
+											$$ - Moderate (NGN 2000 - 10000)
+										</SelectItem>
+										<SelectItem value="$$$">
+											$$$ - Upscale (NGN 10000+)
+										</SelectItem>
 									</SelectContent>
 								</Select>
 								{errors.priceRange && (
@@ -591,14 +604,29 @@ export default function SubmitSpotPage() {
 								</div>
 							</div>
 
-							<div>
+							<div className="flex flex-col gap-4">
 								<Label className="text-body font-medium flex items-center">
 									<Clock className="h-4 w-4 mr-2" />
 									Operating Hours
 								</Label>
-								<p className="text-caption text-muted-foreground mb-4">
-									Set the hours for each day
-								</p>
+								<div className="flex gap-4">
+									<div className="flex flex-col gap-2">
+										<Label>Open</Label>
+										<Input
+											style={{ width: "5rem" }}
+											type="time"
+											className="w-20"
+										/>
+									</div>
+									<div className="flex flex-col gap-2">
+										<Label>Close</Label>
+										<Input
+											style={{ width: "5rem" }}
+											type="time"
+											className="w-20"
+										/>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

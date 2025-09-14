@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { Space_Grotesk } from "next/font/google";
 import { DM_Sans } from "next/font/google";
 import Provider from "./provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const spaceGrotesk = Space_Grotesk({
 	subsets: ["latin"],
@@ -20,54 +21,62 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Amala Atlas - Find Authentic Amala Spots",
-  description:
-    "Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
-  applicationName: "Amala Atlas",
-  referrer: "origin-when-cross-origin",
-  keywords: ["amala", "restaurants", "food", "locations", "map", "authentic", "nigerian food"],
-  authors: [{ name: "Amala Atlas Team" }],
-  creator: "Amala Atlas",
-  publisher: "Amala Atlas",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  metadataBase: new URL("https://amalaatlas.vercel.app"),
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    siteName: "Amala Locations",
-    title: "Amala Locations - Find Authentic Amala Spots",
-    description:
-      "Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
-    url: "https://amalaatlas.vercel.app",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Amala Locations App",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Amala Atlas - Find Authentic Amala Spots",
-    description:
-      "Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
-    images: ["/og-image.jpg"],
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Amala Atlas",
-  },
-  manifest: "/manifest.json",
-}
+	title: "Amala Atlas - Find Authentic Amala Spots",
+	description:
+		"Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
+	applicationName: "Amala Atlas",
+	referrer: "origin-when-cross-origin",
+	keywords: [
+		"amala",
+		"restaurants",
+		"food",
+		"locations",
+		"map",
+		"authentic",
+		"nigerian food",
+	],
+	authors: [{ name: "Amala Atlas Team" }],
+	creator: "Amala Atlas",
+	publisher: "Amala Atlas",
+	formatDetection: {
+		email: false,
+		address: false,
+		telephone: false,
+	},
+	metadataBase: new URL("https://amalaatlas.vercel.app"),
+	alternates: {
+		canonical: "/",
+	},
+	openGraph: {
+		type: "website",
+		siteName: "Amala Locations",
+		title: "Amala Locations - Find Authentic Amala Spots",
+		description:
+			"Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
+		url: "https://amalaatlas.vercel.app",
+		images: [
+			{
+				url: "/og-image.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Amala Locations App",
+			},
+		],
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Amala Atlas - Find Authentic Amala Spots",
+		description:
+			"Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
+		images: ["/og-image.jpg"],
+	},
+	appleWebApp: {
+		capable: true,
+		statusBarStyle: "default",
+		title: "Amala Atlas",
+	},
+	manifest: "/manifest.json",
+};
 
 export const viewport: Viewport = {
 	themeColor: [
@@ -119,7 +128,10 @@ export default function RootLayout({
 			</head>
 			<body className={`font-sans ${spaceGrotesk.variable} ${dmSans.variable}`}>
 				<Provider>
-					<Suspense fallback={null}>{children}</Suspense>
+					<Suspense fallback={null}>
+						{children}
+						<Toaster />
+					</Suspense>
 					<Analytics />
 				</Provider>
 			</body>

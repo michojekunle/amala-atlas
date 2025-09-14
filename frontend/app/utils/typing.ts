@@ -52,4 +52,28 @@ export interface PendingSpot {
 	website?: string;
 	phone?: string;
 	status: "pending";
+	tags: string[];
+}
+
+export interface SpotCandidate {
+	id: string;
+	public_id?: string;
+	created_at?: string;
+	name: string;
+	raw_address: string;
+	notes: string;
+	lat: number | 0;
+	lng: number | 0;
+	city: string;
+	country?: string;
+	phone: string;
+	website: string;
+	tags: string[];
+	price_band: string;
+	photo_urls: string[];
+	open_hours: { [key: string]: string };
+	submitted_by_email?: string;
+	evidence?: any[];
+	geo_precision?: string;
+	status: string;
 }

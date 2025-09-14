@@ -24,6 +24,7 @@ function useAPIFetch<RES>({
 						return response.data;
 					})
 					.then((data) => {
+						console.log("useAPIQuery:: Fetched Data:>>\n", data);
 						return data as RES;
 					});
 			} catch (error) {
