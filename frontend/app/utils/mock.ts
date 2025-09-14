@@ -1,4 +1,4 @@
-import { AmalaSspot } from "./typing";
+import { AmalaSspot, PendingSpot } from "./typing";
 
 const spotId = "1";
 export const mockSpot: AmalaSspot = {
@@ -76,22 +76,6 @@ export const mockSpot: AmalaSspot = {
 		},
 	],
 };
-
-export interface PendingSpot {
-	id: string;
-	name: string;
-	raw_address: string;
-	lat: number;
-	lng: number;
-	description: string;
-	category: string;
-	photo_url: string;
-	submittedBy: string;
-	submittedDate: string;
-	website?: string;
-	phone?: string;
-	status: "pending";
-}
 
 export const mockPendingSpots: PendingSpot[] = [
 	{

@@ -37,3 +37,19 @@ export interface AmalaSspot {
 	amenities: string[];
 	reviews: Review[];
 }
+
+export interface PendingSpot {
+	id: string;
+	name: string;
+	raw_address: string;
+	lat: number;
+	lng: number;
+	description: string;
+	category: string;
+	photo_url: string;
+	submittedBy: string;
+	submittedDate: string;
+	website?: string;
+	phone?: string;
+	status: "pending";
+}

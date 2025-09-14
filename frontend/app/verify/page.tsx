@@ -3,15 +3,16 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThumbsUp, ThumbsDown, MapPin, Globe, Phone, User } from "lucide-react";
 import { GoogleMaps } from "@/components/google-maps";
 import Image from "next/image";
-import { PendingSpot, mockPendingSpots } from "../utils/mock";
+import { mockPendingSpots } from "../utils/mock";
 import useAPIFetch from "@/app/hooks/use-api-fetch";
 import postData from "../hooks/use-api-post";
 import { useRouter } from "next/navigation";
+import { PendingSpot } from "../utils/typing";
+import { toast } from "sonner";
 
 export default function PendingSpotsPage() {
 	const [pendingSpots, setPendingSpots] =
@@ -32,14 +33,24 @@ export default function PendingSpotsPage() {
 		}
 	}, [data]);
 
-	const handleAction = (spotId: string) => {
+	const handleAction = async (spotId: string) => {
 		const spotToPost = pendingSpots.find(
 			(spot: PendingSpot) => spot.id === spotId
 		);
 		if (spotToPost) {
-			const response = postData<PendingSpot>("/verify/action/", spotToPost);
-			console.log("Spot Created");
-			router.push("/");
+			const response = await postData<PendingSpot, PendingSpot>(
+				"/verify/action/",
+				spotToPost
+			);
+			if (response) {
+				toast.success("Spot Verification Action Was Successful");
+				console.log("Spot Created");
+				setTimeout(() => {
+					router.push("/");
+				}, 2000);
+			} else {
+				toast.error("Spot Verification Action Unuccessful");
+			}
 		}
 		if (selectedSpot?.id === spotId) {
 			const remainingSpots = pendingSpots.filter((spot) => spot.id !== spotId);

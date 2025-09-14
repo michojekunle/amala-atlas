@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { toast } from "sonner";
 
 /**
  * Post data to an API endpoint with enhanced error handling and flexibility.
@@ -11,7 +12,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
  * @returns {Promise<R>} - The response data
  * @throws {Error} - Throws with error message if request fails
  */
-async function postData<T, R = any>(
+async function postData<T, R>(
 	url: string,
 	data: T,
 	config?: AxiosRequestConfig
@@ -32,14 +33,21 @@ async function postData<T, R = any>(
 		return response.data;
 	} catch (error: any) {
 		if (error.response) {
+			toast.error(
+				error.response.data?.message ||
+					error.response.data?.detail ||
+					`Request failed with status ${error.response.status}`
+			);
 			throw new Error(
 				error.response.data?.message ||
 					error.response.data?.detail ||
 					`Request failed with status ${error.response.status}`
 			);
 		} else if (error.request) {
+			toast.error("No response from server. Please check your network.");
 			throw new Error("No response from server. Please check your network.");
 		} else {
+			toast.error(error.message || "Unknown error occurred");
 			throw new Error(error.message || "Unknown error occurred");
 		}
 	}
