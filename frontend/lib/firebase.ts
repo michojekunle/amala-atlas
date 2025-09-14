@@ -20,15 +20,15 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 
-// Connect to emulators in development
-if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
-  try {
-    connectFirestoreEmulator(db, "localhost", 8080);
-    connectAuthEmulator(auth, "http://localhost:9099");
-    connectStorageEmulator(storage, "localhost", 9199);
-  } catch (error) {
-    console.log("Emulators already connected");
-  }
-}
+// // Connect to emulators in development
+// if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
+//   try {
+//     connectFirestoreEmulator(db, "localhost", 8080);
+//     connectAuthEmulator(auth, "http://localhost:9099");
+//     connectStorageEmulator(storage, "localhost", 9199);
+//   } catch (error) {
+//     console.log("Emulators already connected");
+//   }
+// }
 
 export default app;

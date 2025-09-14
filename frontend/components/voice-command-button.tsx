@@ -111,7 +111,7 @@ export function VoiceCommandButton({
       )}
 
       {showCommands && commands.length > 0 && !isListening && (
-        <div className="absolute top-full left-0 mt-2 p-3 bg-background border border-border rounded-lg shadow-lg z-50 min-w-64">
+        <div className="absolute top-full left-0 mt-2 p-3 bg-background border border-border rounded-lg shadow-lg z-[9999] min-w-64">
           <div className="flex items-center space-x-2 mb-2">
             <Mic className="h-3 w-3 text-primary" />
             <span className="text-xs font-medium">Voice Commands</span>
