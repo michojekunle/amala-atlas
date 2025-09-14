@@ -261,7 +261,7 @@ export default function SubmitSpotPage() {
 		try {
 			const lat = 0;
 			const lng = 0;
-			await postData<SubmissionForm>("/submit-candidate/", [], {
+			await postData<SubmissionForm>("/submit-candidate/", {
 				name: form.name,
 				address: form.address,
 				description: form.description,

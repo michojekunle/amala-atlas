@@ -37,11 +37,7 @@ export default function PendingSpotsPage() {
 			(spot: PendingSpot) => spot.id === spotId
 		);
 		if (spotToPost) {
-			const response = postData<PendingSpot>(
-				"/verify/action/",
-				[""],
-				spotToPost
-			);
+			const response = postData<PendingSpot>("/verify/action/", spotToPost);
 			console.log("Spot Created");
 			router.push("/");
 		}
