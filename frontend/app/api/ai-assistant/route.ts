@@ -73,13 +73,14 @@ Respond in JSON format:
 `;
 
     const { text } = await generateText({
-      model: googleAI("gemini-pro"),
+      model: googleAI("gemini-2.5-pro"),
       prompt: assistantPrompt,
       temperature: 0.7,
     });
 
     let aiResponse;
     try {
+      console.log("AI TEXTTTTTTTTTTTTT", text);
       aiResponse = JSON.parse(text);
     } catch (parseError) {
       console.error(" AI response parsing error:", parseError);

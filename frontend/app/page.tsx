@@ -23,6 +23,7 @@ import { GoogleMaps } from "@/components/google-maps";
 import { LocationCard } from "@/components/location-card";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import useAPIFetch from "@/hooks/use-api-fetch";
 
 interface AmalaSspot {
   id: string;
@@ -146,6 +147,11 @@ export default function AmalaSpotsList() {
   const [aiSearchInsights, setAiSearchInsights] = useState("");
   const [viewMode, setViewMode] = useState<"map" | "list">("map");
   const [selectedSpot, setSelectedSpot] = useState<AmalaSspot | null>(null);
+
+  const { data, isLoading, error } = useAPIFetch<AmalaSspot>({
+    url: `/spots`,
+    // queryKeys: ["spot", spotId],
+  });
 
   const voiceCommands = [
     {
@@ -323,6 +329,12 @@ export default function AmalaSpotsList() {
     setSelectedSpot(spot);
   };
 
+  useEffect(() => {
+    console.log("===============================================");
+    console.log(data, isLoading, error);
+    console.log("===============================================");
+  }, [data, isLoading]);
+
   return (
     <div className="min-h-screen bg-background">
       <PWAInstallPrompt />
@@ -436,14 +448,6 @@ export default function AmalaSpotsList() {
                   List
                 </Button>
               </div>
-              <Button
-                variant="outline"
-                onClick={() => setFilterOpen(!filterOpen)}
-                className="h-11 px-4"
-              >
-                <Filter className="h-4 w-4 mr-2" />
-                Filter
-              </Button>
               <Link href="/submit">
                 <Button className="h-11 px-4 bg-primary hover:bg-primary/90">
                   <Plus className="h-4 w-4 mr-2" />

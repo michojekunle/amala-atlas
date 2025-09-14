@@ -26,7 +26,7 @@ import {
 import { cn } from "@/lib/utils";
 import { GoogleMap } from "@/components/google-map";
 import { url } from "inspector";
-import useAPIFetch from "@/app/hooks/use-api-fetch";
+import useAPIFetch from "@/hooks/use-api-fetch";
 import { AmalaSspot } from "@/app/utils/typing";
 import { mockSpot } from "@/app/utils/mock";
 
@@ -43,6 +43,7 @@ export default function SpotDetailPage() {
     url: `/spot/${spotId}/`,
     queryKeys: ["spot", spotId],
   });
+  
   useEffect(() => {
     if (data) setSpot(data);
     else setSpot(mockSpot);

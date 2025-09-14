@@ -347,7 +347,7 @@ export function GoogleMaps({
             }
             <span style="font-size: 12px;">${spot.priceRange}</span>
           </div>
-          <a href="/spot/${spot.id}" style="display: inline-flex; align-items: center; padding: 4px 12px; background: #3b82f6; color: white; font-size: 12px; font-weight: 500; border-radius: 4px; text-decoration: none;">
+          <a href="/spot/${spot.id}" style="display: inline-flex; align-items: center; padding: 4px 12px; background: #92400e; color: white; font-size: 12px; font-weight: 500; border-radius: 4px; text-decoration: none;">
             View Details
           </a>
         </div>
@@ -375,7 +375,7 @@ export function GoogleMaps({
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2" />
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2" />
             <p className="text-sm text-gray-600">Loading map...</p>
           </div>
         </div>
