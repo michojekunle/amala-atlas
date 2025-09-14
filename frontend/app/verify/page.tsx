@@ -9,8 +9,8 @@ import { ThumbsUp, ThumbsDown, MapPin, Globe, Phone, User } from "lucide-react";
 import { GoogleMaps } from "@/components/google-maps";
 import Image from "next/image";
 import { PendingSpot, mockPendingSpots } from "../utils/mock";
-import useAPIFetch from "@/app/hooks/use-api-fetch";
-import postData from "../hooks/use-api-post";
+import useAPIFetch from "@/hooks/use-api-fetch";
+import postData from "@/hooks/use-api-post";
 import { useRouter } from "next/navigation";
 
 export default function PendingSpotsPage() {
