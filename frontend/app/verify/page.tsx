@@ -105,7 +105,7 @@ export default function PendingSpotsPage() {
 													<p className="text-caption text-muted-foreground">
 														{spot.raw_address}
 													</p>
-													<div className="flex items-center gap-2 mt-2">
+													<div className="flex items-left gap-2 mt-2">
 														<Button
 															size="sm"
 															onClick={(e) => {
