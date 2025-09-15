@@ -254,9 +254,9 @@ export default function PendingSpotsPage() {
 													</CarouselItem>
 												)
 											)}
-											<CarouselPrevious />
-											<CarouselNext />
 										</CarouselContent>
+										<CarouselPrevious />
+										<CarouselNext />
 									</Carousel>
 								</div>
 								<div className="p-2">
