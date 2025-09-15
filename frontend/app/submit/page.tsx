@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import postData from "../../hooks/use-api-post";
 import axios from "axios";
 import { toast } from "sonner";
+import Image from "next/image";
 
 interface SubmissionForm {
 	lat: number;
@@ -217,7 +218,9 @@ export default function SubmitSpotPage() {
 				console.log("form.photo_urls:", form.photo_urls);
 			}
 			if (failedUploads.length > 0) {
-				console.warn(`${failedUploads.length} uploads failed:`, failedUploads);
+				toast.warning(`${failedUploads.length} uploads failed:`, {
+					description: failedUploads.join(", "),
+				});
 			}
 		} catch (error) {
 			console.error("Batch upload failed:", error);
@@ -270,31 +273,42 @@ export default function SubmitSpotPage() {
 		try {
 			const lat = 0;
 			const lng = 0;
-			await postData<SubmissionForm, any>("/submit-candidate/", {
-				name: form.name,
-				address: form.address,
-				description: form.description,
-				phone: form.phone,
-				website: form.website,
-				lat,
-				lng,
-				kind: "manual",
-				city: form.city,
-				state: form.state,
-				country: form.country === "" ? "Nigeria" : form.country,
-				email: form.email,
-				price_band: form.price_band,
-				tags: form.tags,
-				hours: form.hours,
-				photo_urls: form.photo_urls,
-				hours_text: JSON.stringify(form.hours),
-				raw_payload: JSON.stringify(form),
-				notes: form.notes,
-			});
-
+			const response = await postData<SubmissionForm, any>(
+				"/submit-candidate/",
+				{
+					name: form.name,
+					address: form.address,
+					description: form.description,
+					notes: form.description,
+					phone: form.phone,
+					website: form.website,
+					lat,
+					lng,
+					kind: "manual",
+					city: form.city,
+					state: form.state,
+					country: form.country === "" ? "Nigeria" : form.country,
+					email: form.email,
+					price_band: form.price_band,
+					tags: form.tags,
+					hours: form.hours,
+					photo_urls: form.photo_urls,
+					hours_text: JSON.stringify(form.hours),
+					raw_payload: JSON.stringify(form),
+				}
+			);
+			if (!response || response.error) {
+				toast.error(response?.error || "Submission failed");
+				throw new Error(response?.error || "Submission failed");
+			}
 			setIsVerifying(false);
 			setIsSubmitting(false);
-			router.push("/");
+			toast.success(
+				`${response.name || form.name} Spot submitted successfully!`
+			);
+			setTimeout(() => {
+				router.push("/");
+			}, 2000);
 		} catch (error) {
 			setIsVerifying(false);
 			setIsSubmitting(false);
@@ -586,6 +600,24 @@ export default function SubmitSpotPage() {
 								</div>
 
 								<div>
+									<Label htmlFor="phone" className="text-body font-medium">
+										Email
+									</Label>
+									<div className="relative mt-1">
+										<Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+										<Input
+											id="email"
+											value={form.email}
+											onChange={(e) =>
+												handleInputChange("email", e.target.value)
+											}
+											placeholder="restaurant@example.com"
+											className="pl-10"
+										/>
+									</div>
+								</div>
+
+								<div>
 									<Label htmlFor="website" className="text-body font-medium">
 										Website
 									</Label>
@@ -692,12 +724,14 @@ export default function SubmitSpotPage() {
 
 							{form.photo_urls.length > 0 && (
 								<div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-									{form.photo_urls.map((url, index) => (
+									{form.photo_urls.map((photo_url, index) => (
 										<div key={index} className="relative group">
-											<img
-												src={url || "/placeholder.svg"}
+											<Image
+												src={photo_url || "/placeholder.svg"}
 												alt={`Upload ${index + 1}`}
 												className="w-full h-32 object-cover rounded-lg"
+												width={400}
+												height={400}
 											/>
 											<Button
 												variant="destructive"

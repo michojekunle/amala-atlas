@@ -117,100 +117,99 @@ export default function PendingSpotsPage() {
 
 						<div className="space-y-0 max-h-[calc(100vh-12rem)] overflow-y-auto">
 							{pendingSpots.map((spot, index) => (
-								<Card className="h-full bg-gradient-to-br from-primary/10 via-white to-accent/10 border-none shadow-xl">
+								<Card
+									key={spot.id}
+									className="h-full bg-gradient-to-br from-primary/10 via-white to-accent/10 border-none shadow-xl"
+								>
 									<CardContent className="p-0">
-										{pendingSpots.length === 0 ? (
-											<div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
-												<MapPin className="h-10 w-10 mb-2" />
-												<span className="font-semibold">
-													No unverified spots available
-												</span>
-											</div>
-										) : (
-											<div className="divide-y divide-border">
-												{pendingSpots.map((spot) => (
-													<div
-														key={spot.id}
-														className={`group grid grid-cols-[56px_1fr_120px] gap-4 items-center px-4 py-3 cursor-pointer transition-all duration-200 rounded-xl mb-1
+										<div className="divide-y divide-border">
+											{pendingSpots.map((spot) => (
+												<div
+													key={spot.id}
+													className={`group grid grid-cols-[56px_1fr_120px] gap-4 items-center px-4 py-3 cursor-pointer transition-all duration-200 rounded-xl mb-1
 															${
 																selectedSpotCandidate?.id === spot.id
 																	? "bg-primary/10 border-l-4 border-l-primary shadow-lg"
 																	: "hover:bg-accent/30"
 															}
 														`}
-														onClick={() => handleSpotSelect(spot)}
-													>
-														{/* Avatar */}
-														<div className="flex flex-col items-center">
-															<Avatar className="w-14 h-14 ring-2 ring-primary/60 shadow-md">
-																<AvatarImage
-																	src={spot.photo_urls[0] || "/placeholder.svg"}
-																	alt={spot.name}
-																/>
-																<AvatarFallback className="bg-primary text-primary-foreground">
-																	{spot.name.charAt(0)}
-																</AvatarFallback>
-															</Avatar>
-														</div>
-														{/* Main info */}
-														<div className="flex flex-col min-w-0">
-															<div className="flex items-center gap-2 mb-1">
-																<h3 className="font-bold text-lg text-foreground truncate group-hover:text-primary transition-colors">
-																	{spot.name}
-																</h3>
-																{spot.status && (
-																	<Badge className="bg-yellow-400/80 text-yellow-900 text-xs ml-1">
-																		{spot.status.toUpperCase()}
-																	</Badge>
-																)}
-															</div>
-															<p className="text-caption text-muted-foreground truncate mb-1">
-																{spot.raw_address}
-															</p>
-															{spot.notes && (
-																<p className="text-xs text-muted-foreground italic truncate mb-1">
-																	{spot.notes}
-																</p>
+													onClick={() => handleSpotSelect(spot)}
+												>
+													{/* Avatar */}
+													<div className="flex flex-col items-center">
+														<Avatar className="w-14 h-14 ring-2 ring-primary/60 shadow-md">
+															<AvatarImage
+																src={
+																	Array.isArray(spot.photo_urls) &&
+																	spot.photo_urls.length > 0
+																		? spot.photo_urls[0]
+																		: "/placeholder.svg"
+																}
+																alt={spot.name}
+															/>
+															<AvatarFallback className="bg-primary text-primary-foreground">
+																{spot.name.charAt(0)}
+															</AvatarFallback>
+														</Avatar>
+													</div>
+													{/* Main info */}
+													<div className="flex flex-col min-w-0">
+														<div className="flex items-center gap-2 mb-1">
+															<h3 className="font-bold text-lg text-foreground truncate group-hover:text-primary transition-colors">
+																{spot.name}
+															</h3>
+															{spot.status && (
+																<Badge className="bg-yellow-400/80 text-yellow-900 text-xs ml-1">
+																	{spot.status.toUpperCase()}
+																</Badge>
 															)}
-															<div className="flex flex-wrap gap-1 mt-1">
-																{spot.tags?.slice(0, 3).map((tag: string) => (
-																	<Badge
-																		key={tag}
-																		className="bg-primary/20 text-primary text-xs px-2 py-0.5"
-																	>
-																		{tag}
-																	</Badge>
-																))}
-															</div>
 														</div>
-														{/* Actions */}
-														<div className="flex flex-col items-end gap-2">
-															<Button
-																size="sm"
-																onClick={(e) => {
-																	e.stopPropagation();
-																	handleAction(spot.id, "accept");
-																}}
-																className="h-8 px-4 bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold shadow hover:scale-105 hover:from-green-600 hover:to-green-800 transition-transform"
-															>
-																<ThumbsUp className="h-3 w-3 mr-1" /> Accept
-															</Button>
-															<Button
-																size="sm"
-																variant="destructive"
-																onClick={(e) => {
-																	e.stopPropagation();
-																	handleAction(spot.id, "reject");
-																}}
-																className="h-8 px-4 font-semibold shadow hover:scale-105 transition-transform"
-															>
-																<ThumbsDown className="h-3 w-3 mr-1" /> Reject
-															</Button>
+														<p className="text-caption text-muted-foreground truncate mb-1">
+															{spot.raw_address}
+														</p>
+														{spot.notes && (
+															<p className="text-xs text-muted-foreground italic truncate mb-1">
+																{spot.notes}
+															</p>
+														)}
+														<div className="flex flex-wrap gap-1 mt-1">
+															{spot.tags?.slice(0, 3).map((tag: string) => (
+																<Badge
+																	key={tag}
+																	className="bg-primary/20 text-primary text-xs px-2 py-0.5"
+																>
+																	{tag}
+																</Badge>
+															))}
 														</div>
 													</div>
-												))}
-											</div>
-										)}
+													{/* Actions */}
+													<div className="flex flex-col items-end gap-2">
+														<Button
+															size="sm"
+															onClick={(e) => {
+																e.stopPropagation();
+																handleAction(spot.id, "accept");
+															}}
+															className="h-8 px-4 bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold shadow hover:scale-105 hover:from-green-600 hover:to-green-800 transition-transform"
+														>
+															<ThumbsUp className="h-3 w-3 mr-1" /> Accept
+														</Button>
+														<Button
+															size="sm"
+															variant="destructive"
+															onClick={(e) => {
+																e.stopPropagation();
+																handleAction(spot.id, "reject");
+															}}
+															className="h-8 px-4 font-semibold shadow hover:scale-105 transition-transform"
+														>
+															<ThumbsDown className="h-3 w-3 mr-1" /> Reject
+														</Button>
+													</div>
+												</div>
+											))}
+										</div>
 									</CardContent>
 								</Card>
 							))}
