@@ -41,7 +41,12 @@ export default function PendingSpotsPage() {
 				(a, b) =>
 					new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime()
 			);
+			console.log("Sorted Data by created_at:", sortedData);
 			const verificationQueue = new Queue<SpotCandidate>();
+			console.log(
+				"Enqueuing spots into verificationQueue...",
+				verificationQueue
+			);
 			sortedData.forEach((item) => verificationQueue.enqueue(item));
 			setPendingSpots(Array.from(verificationQueue));
 			return;
@@ -142,7 +147,7 @@ export default function PendingSpotsPage() {
 																src={
 																	Array.isArray(spot.photo_urls) &&
 																	spot.photo_urls.length > 0
-																		? spot.photo_urls[0]
+																		? spot.photo_urls[0].url
 																		: "/placeholder.svg"
 																}
 																alt={spot.name}
@@ -229,18 +234,26 @@ export default function PendingSpotsPage() {
 											}),
 										]}
 									>
-										<CarouselContent>
-											{selectedSpotCandidate.photo_urls.map((url, index) => (
-												<CarouselItem key={index}>
-													<Image
-														key={url}
-														src={url}
-														alt={selectedSpotCandidate.name}
-														layout="fill"
-														objectFit="cover"
-													/>
-												</CarouselItem>
-											))}
+										<CarouselContent className="w-full max-w-xs">
+											{selectedSpotCandidate.photo_urls.map(
+												(photo_url, index) => (
+													<CarouselItem key={photo_url.id}>
+														<div className="p-1">
+															<Card>
+																<CardContent className="flex aspect-square items-center justify-center p-6">
+																	<Image
+																		key={`Key:: ${photo_url.id}-${index}`}
+																		src={photo_url.url}
+																		alt={selectedSpotCandidate.name}
+																		layout="fill"
+																		objectFit="cover"
+																	/>
+																</CardContent>
+															</Card>
+														</div>
+													</CarouselItem>
+												)
+											)}
 											<CarouselPrevious />
 											<CarouselNext />
 										</CarouselContent>
@@ -281,7 +294,8 @@ export default function PendingSpotsPage() {
 																isVerified: false,
 																verificationStatus: "pending",
 																isFavorite: false,
-																imageUrl: selectedSpotCandidate.photo_urls[0],
+																imageUrl:
+																	selectedSpotCandidate.photo_urls[0].url,
 																priceRange: "$$",
 																cuisine: ["Nigerian"],
 																openNow: true,

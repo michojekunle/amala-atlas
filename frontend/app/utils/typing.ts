@@ -70,7 +70,7 @@ export interface SpotCandidate {
 	website: string;
 	tags: string[];
 	price_band: string;
-	photo_urls: string[];
+	photo_urls: { id: string; url: string }[];
 	open_hours: { [key: string]: string };
 	submitted_by_email?: string;
 	evidence?: any[];
