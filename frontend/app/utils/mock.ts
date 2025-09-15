@@ -1,4 +1,4 @@
-import { AmalaSspot } from "./typing";
+import { AmalaSspot, PendingSpot, SpotCandidate } from "./typing";
 
 const spotId = "1";
 export const mockSpot: AmalaSspot = {
@@ -77,38 +77,28 @@ export const mockSpot: AmalaSspot = {
 	],
 };
 
-export interface PendingSpot {
-	id: string;
-	name: string;
-	raw_address: string;
-	lat: number;
-	lng: number;
-	description: string;
-	category: string;
-	photo_url: string;
-	submittedBy: string;
-	submittedDate: string;
-	website?: string;
-	phone?: string;
-	status: "pending";
-}
-
-export const mockPendingSpots: PendingSpot[] = [
+export const mockPendingSpots: SpotCandidate[] = [
 	{
 		id: "1",
+		public_id: "",
+		created_at: "01/05/2025",
 		name: "Amala Hotspot",
 		raw_address: "Agege, Lagos State",
 		lat: 6.6158,
 		lng: 3.3417,
-		description:
+		notes:
 			"Vorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.",
-		category: "Restaurant",
-		photo_url: "/traditional-nigerian-amala-restaurant-interior.jpg",
-		submittedBy: "Community Scout",
-		submittedDate: "2024-03-15",
+		phone: "09087654323",
 		website: "https://amalahotspot.com",
-		phone: "+234 801 234 5678",
-		status: "pending",
+		tags: ["Amala", "Abula", "Gbegiri", "Ewedu"],
+		photo_urls: ["/traditional-nigerian-amala-restaurant-interior.jpg"],
+		status: "pending_verification",
+		city: "Agege",
+		country: "Nigeria",
+		price_band: "medium",
+		open_hours: { open: "10:00 AM", close: "10:00 PM" },
+		submitted_by_email: "community@amalahotspot.com",
+		evidence: [],
 	},
 	{
 		id: "2",
@@ -116,13 +106,22 @@ export const mockPendingSpots: PendingSpot[] = [
 		raw_address: "Agege, Lagos State",
 		lat: 6.62,
 		lng: 3.345,
-		description:
+		notes:
 			"Traditional Yoruba cuisine with authentic amala preparation methods passed down through generations.",
-		category: "Restaurant",
-		photo_url: "/homestyle-nigerian-kitchen-amala-preparation.jpg",
-		submittedBy: "User: @foodie_lagos",
-		submittedDate: "2024-03-14",
-		status: "pending",
+
+		status: "pending_verification",
+		public_id: "",
+		created_at: "01/05/2025",
+		photo_urls: ["/homestyle-nigerian-kitchen-amala-preparation.jpg"],
+		website: "https://amalahotspot.com",
+		phone: "+234 801 234 5678",
+		city: "Agege",
+		country: "Nigeria",
+		price_band: "medium",
+		open_hours: { open: "10:00 AM", close: "10:00 PM" },
+		tags: ["Amala", "Abula", "Gbegiri", "Ewedu"],
+		submitted_by_email: "community@amalahotspot.com",
+		evidence: [],
 	},
 	{
 		id: "3",
@@ -130,13 +129,22 @@ export const mockPendingSpots: PendingSpot[] = [
 		raw_address: "Agege, Lagos State",
 		lat: 6.618,
 		lng: 3.34,
-		description:
+		notes:
 			"Family-owned restaurant specializing in traditional Nigerian dishes with focus on quality amala.",
-		category: "Restaurant",
-		photo_url: "/vibrant-nigerian-restaurant-cultural-atmosphere.jpg",
-		submittedBy: "Restaurant Owner",
-		submittedDate: "2024-03-13",
-		status: "pending",
+
+		status: "pending_verification",
+		public_id: "",
+		created_at: "01/05/2025",
+		photo_urls: ["/vibrant-nigerian-restaurant-cultural-atmosphere.jpg"],
+		website: "https://amalahotspot.com",
+		phone: "+234 801 234 5678",
+		city: "Agege",
+		country: "Nigeria",
+		price_band: "medium",
+		open_hours: { open: "10:00 AM", close: "10:00 PM" },
+		tags: ["Amala", "Abula", "Gbegiri", "Ewedu"],
+		submitted_by_email: "community@amalahotspot.com",
+		evidence: [],
 	},
 	{
 		id: "4",
@@ -144,13 +152,21 @@ export const mockPendingSpots: PendingSpot[] = [
 		raw_address: "Agege, Lagos State",
 		lat: 6.622,
 		lng: 3.338,
-		description:
+		notes:
 			"Modern take on traditional amala with contemporary dining experience and authentic flavors.",
-		category: "Restaurant",
-		photo_url: "/modern-nigerian-restaurant-amala-dish.jpg",
-		submittedBy: "Community",
-		submittedDate: "2024-03-12",
-		status: "pending",
+		status: "pending_verification",
+		public_id: "",
+		created_at: "01/05/2025",
+		photo_urls: ["/modern-nigerian-restaurant-amala-dish.jpg"],
+		website: "https://amalahotspot.com",
+		phone: "+234 801 234 5678",
+		city: "Agege",
+		country: "Nigeria",
+		price_band: "medium",
+		open_hours: { open: "10:00 AM", close: "10:00 PM" },
+		tags: ["Amala", "Abula", "Gbegiri", "Ewedu"],
+		submitted_by_email: "community@amalahotspot.com",
+		evidence: [],
 	},
 	{
 		id: "5",
@@ -158,12 +174,20 @@ export const mockPendingSpots: PendingSpot[] = [
 		raw_address: "Agege, Lagos State",
 		lat: 6.616,
 		lng: 3.342,
-		description:
+		notes:
 			"Authentic Nigerian restaurant known for exceptional amala and traditional Yoruba hospitality.",
-		category: "Restaurant",
-		photo_url: "/traditional-nigerian-amala-restaurant-interior.jpg",
-		submittedBy: "Local Guide",
-		submittedDate: "2024-03-11",
-		status: "pending",
+		status: "pending_verification",
+		public_id: "",
+		created_at: "01/05/2025",
+		photo_urls: ["/traditional-nigerian-amala-restaurant-interior.jpg"],
+		website: "https://amalahotspot.com",
+		phone: "+234 801 234 5678",
+		city: "Agege",
+		country: "Nigeria",
+		price_band: "medium",
+		open_hours: { open: "10:00 AM", close: "10:00 PM" },
+		tags: ["Amala", "Abula", "Gbegiri", "Ewedu"],
+		submitted_by_email: "community@amalahotspot.com",
+		evidence: [],
 	},
 ];

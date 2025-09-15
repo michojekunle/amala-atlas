@@ -3,161 +3,275 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThumbsUp, ThumbsDown, MapPin, Globe, Phone, User } from "lucide-react";
 import { GoogleMaps } from "@/components/google-maps";
 import Image from "next/image";
-import { PendingSpot, mockPendingSpots } from "../utils/mock";
-import useAPIFetch from "@/hooks/use-api-fetch";
-import postData from "@/hooks/use-api-post";
+import { mockPendingSpots } from "../utils/mock";
+import useAPIFetch from "@/app/hooks/use-api-fetch";
+import postData from "../hooks/use-api-post";
 import { useRouter } from "next/navigation";
+import { PendingSpot, SpotCandidate } from "../utils/typing";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import {
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import Queue from "yocto-queue";
 
 export default function PendingSpotsPage() {
-	const [pendingSpots, setPendingSpots] =
-		useState<PendingSpot[]>(mockPendingSpots);
+	const [pendingSpots, setPendingSpots] = useState<SpotCandidate[]>([]);
 	const router = useRouter();
-	const [selectedSpot, setSelectedSpot] = useState<PendingSpot | null>(
-		pendingSpots[0]
-	);
+	const [selectedSpotCandidate, setSelectedSpotCandidate] =
+		useState<SpotCandidate>(pendingSpots[0]);
 
-	const { data, isLoading, error } = useAPIFetch<PendingSpot[]>({
+	const { data, isLoading, error } = useAPIFetch<SpotCandidate[]>({
 		url: `/verify/queue/`,
 		queryKeys: ["queue", "verify"],
 	});
 
 	useEffect(() => {
 		if (data) {
-			setPendingSpots(data);
+			const sortedData = [...data].sort(
+				(a, b) =>
+					new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime()
+			);
+			console.log("Sorted Data by created_at:", sortedData);
+			const verificationQueue = new Queue<SpotCandidate>();
+			console.log(
+				"Enqueuing spots into verificationQueue...",
+				verificationQueue
+			);
+			sortedData.forEach((item) => verificationQueue.enqueue(item));
+			setPendingSpots(Array.from(verificationQueue));
+			return;
 		}
+		setPendingSpots(mockPendingSpots);
 	}, [data]);
 
-	const handleAction = (spotId: string) => {
-		const spotToPost = pendingSpots.find(
-			(spot: PendingSpot) => spot.id === spotId
-		);
-		if (spotToPost) {
-			const response = postData<PendingSpot>(
-				"/verify/action/",
-				[""],
-				spotToPost
-			);
-			console.log("Spot Created");
-			router.push("/");
+	const handleAction = async (spotId: string, action: string) => {
+		const verification = {
+			candidate_id: spotId,
+			action,
+			notes: "",
+		};
+		if (verification) {
+			const response = await postData<
+				{
+					candidate_id: string;
+					action: string;
+					notes: string;
+					by_user?: string;
+				},
+				PendingSpot
+			>("/verify/action/", verification);
+			if (response) {
+				toast.success("Spot Verification Action Was Successful");
+				console.log("Spot Created");
+				setTimeout(() => {
+					router.push("/");
+				}, 2000);
+			} else {
+				toast.error("Spot Verification Action Unuccessful");
+			}
 		}
-		if (selectedSpot?.id === spotId) {
+		if (selectedSpotCandidate?.id === spotId) {
 			const remainingSpots = pendingSpots.filter((spot) => spot.id !== spotId);
-			setSelectedSpot(remainingSpots.length > 0 ? remainingSpots[0] : null);
+			setSelectedSpotCandidate(remainingSpots[0]);
 		}
 		console.log("[v0] Accepted spot:", spotId);
 	};
 
-	const handleSpotSelect = (spot: PendingSpot) => {
-		setSelectedSpot(spot);
+	const handleSpotSelect = (spot: SpotCandidate) => {
+		setSelectedSpotCandidate(spot);
 	};
 
-	return (
+	if (isLoading) {
+		return (
+			<div className="w-screen h-screen flex items-center justify-center">
+				<p>Loading unverified spots from the queue</p>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="h-screen w-screen flex items-center justify-center">
+				<p>An error occured</p>
+			</div>
+		);
+	}
+
+	return pendingSpots.length ? (
 		<div className="min-h-screen bg-background">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-8rem)]">
 					{/* Left Panel - Pending Spots List */}
 					<div className="lg:col-span-2">
-						<Card className="h-full">
-							<CardHeader className="pb-4">
-								<h2 className="text-subheading font-semibold">Pending Spots</h2>
-								<p className="text-caption">
-									{pendingSpots.length} spots awaiting review
-								</p>
-							</CardHeader>
-							<CardContent className="p-0">
-								<div className="space-y-0 max-h-[calc(100vh-12rem)] overflow-y-auto">
-									{pendingSpots.map((spot, index) => (
-										<div
-											key={spot.id}
-											className={`p-4 border-b border-border cursor-pointer hover:bg-muted/50 transition-colors ${
-												selectedSpot?.id === spot.id
-													? "bg-primary/5 border-l-4 border-l-primary"
-													: ""
-											}`}
-											onClick={() => handleSpotSelect(spot)}
-										>
-											<div className="flex items-start space-x-3">
-												<Avatar className="w-12 h-12 flex-shrink-0">
-													<AvatarImage
-														src={spot.photo_url || "/placeholder.svg"}
-														alt={spot.name}
-													/>
-													<AvatarFallback className="bg-primary text-primary-foreground">
-														{spot.name.charAt(0)}
-													</AvatarFallback>
-												</Avatar>
-												<div className="flex-1 min-w-0">
-													<h3 className="font-semibold text-foreground truncate">
-														{spot.name}
-													</h3>
-													<p className="text-caption text-muted-foreground">
-														{spot.raw_address}
-													</p>
-													<div className="flex items-center gap-2 mt-2">
+						<div className="pb-4">
+							<h2 className="text-subheading font-semibold">Pending Spots</h2>
+							<p className="text-caption">
+								{pendingSpots.length} spots awaiting review
+							</p>
+						</div>
+
+						<div className="space-y-0 max-h-[calc(100vh-12rem)] overflow-y-auto">
+							{pendingSpots.map((spot, index) => (
+								<Card
+									key={spot.id}
+									className="h-full bg-gradient-to-br from-primary/10 via-white to-accent/10 border-none shadow-xl"
+								>
+									<CardContent className="p-0">
+										<div className="divide-y divide-border">
+											{pendingSpots.map((spot) => (
+												<div
+													key={spot.id}
+													className={`group grid grid-cols-[56px_1fr_120px] gap-4 items-center px-4 py-3 cursor-pointer transition-all duration-200 rounded-xl mb-1
+															${
+																selectedSpotCandidate?.id === spot.id
+																	? "bg-primary/10 border-l-4 border-l-primary shadow-lg"
+																	: "hover:bg-accent/30"
+															}
+														`}
+													onClick={() => handleSpotSelect(spot)}
+												>
+													{/* Avatar */}
+													<div className="flex flex-col items-center">
+														<Avatar className="w-14 h-14 ring-2 ring-primary/60 shadow-md">
+															<AvatarImage
+																src={
+																	Array.isArray(spot.photo_urls) &&
+																	spot.photo_urls.length > 0
+																		? spot.photo_urls[0].url
+																		: "/placeholder.svg"
+																}
+																alt={spot.name}
+															/>
+															<AvatarFallback className="bg-primary text-primary-foreground">
+																{spot.name.charAt(0)}
+															</AvatarFallback>
+														</Avatar>
+													</div>
+													{/* Main info */}
+													<div className="flex flex-col min-w-0">
+														<div className="flex items-center gap-2 mb-1">
+															<h3 className="font-bold text-lg text-foreground truncate group-hover:text-primary transition-colors">
+																{spot.name}
+															</h3>
+															{spot.status && (
+																<Badge className="bg-yellow-400/80 text-yellow-900 text-xs ml-1">
+																	{spot.status.toUpperCase()}
+																</Badge>
+															)}
+														</div>
+														<p className="text-caption text-muted-foreground truncate mb-1">
+															{spot.raw_address}
+														</p>
+														{spot.notes && (
+															<p className="text-xs text-muted-foreground italic truncate mb-1">
+																{spot.notes}
+															</p>
+														)}
+														<div className="flex flex-wrap gap-1 mt-1">
+															{spot.tags?.slice(0, 3).map((tag: string) => (
+																<Badge
+																	key={tag}
+																	className="bg-primary/20 text-primary text-xs px-2 py-0.5"
+																>
+																	{tag}
+																</Badge>
+															))}
+														</div>
+													</div>
+													{/* Actions */}
+													<div className="flex flex-col items-end gap-2">
 														<Button
 															size="sm"
 															onClick={(e) => {
 																e.stopPropagation();
-																handleAction(spot.id);
+																handleAction(spot.id, "accept");
 															}}
-															className="h-8 px-3 bg-green-600 hover:bg-green-700 text-white"
+															className="h-8 px-4 bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold shadow hover:scale-105 hover:from-green-600 hover:to-green-800 transition-transform"
 														>
-															<ThumbsUp className="h-3 w-3 mr-1" />
-															Accept
+															<ThumbsUp className="h-3 w-3 mr-1" /> Accept
 														</Button>
 														<Button
 															size="sm"
 															variant="destructive"
 															onClick={(e) => {
 																e.stopPropagation();
-																handleAction(spot.id);
+																handleAction(spot.id, "reject");
 															}}
-															className="h-8 px-3"
+															className="h-8 px-4 font-semibold shadow hover:scale-105 transition-transform"
 														>
-															<ThumbsDown className="h-3 w-3 mr-1" />
-															Reject
+															<ThumbsDown className="h-3 w-3 mr-1" /> Reject
 														</Button>
 													</div>
 												</div>
-											</div>
+											))}
 										</div>
-									))}
-								</div>
-							</CardContent>
-						</Card>
+									</CardContent>
+								</Card>
+							))}
+						</div>
 					</div>
 
 					{/* Right Panel - Selected Spot Details */}
 					<div className="lg:col-span-1">
-						{selectedSpot ? (
+						{selectedSpotCandidate ? (
 							<div className="space-y-6 h-full">
 								{/* Spot Header */}
 								<div className="w-full h-48 relative overflow-hidden">
-									<Image
-										src={selectedSpot.photo_url}
-										alt={selectedSpot.name}
-										layout="fill"
-										objectFit="cover"
-									/>
+									<Carousel
+										plugins={[
+											Autoplay({
+												delay: 2000,
+											}),
+										]}
+									>
+										<CarouselContent className="w-full max-w-xs">
+											{selectedSpotCandidate.photo_urls.map(
+												(photo_url, index) => (
+													<CarouselItem key={photo_url.id}>
+														<div className="p-1">
+															<Card>
+																<CardContent className="flex aspect-square items-center justify-center p-6">
+																	<Image
+																		key={`Key:: ${photo_url.id}-${index}`}
+																		src={photo_url.url}
+																		alt={selectedSpotCandidate.name}
+																		layout="fill"
+																		objectFit="cover"
+																	/>
+																</CardContent>
+															</Card>
+														</div>
+													</CarouselItem>
+												)
+											)}
+										</CarouselContent>
+										<CarouselPrevious />
+										<CarouselNext />
+									</Carousel>
 								</div>
 								<div className="p-2">
 									<div className="flex flex-col items-start space-x-2">
 										<h3 className="text-subheading font-semibold">
-											{selectedSpot.name}
+											{selectedSpotCandidate.name}
 										</h3>
 										<p className="text-caption text-muted-foreground">
-											{selectedSpot.raw_address}
+											{selectedSpotCandidate.raw_address}
 										</p>
 									</div>
 									<div className="flex flex-col items-start space-x-2 mt-4">
 										<h3 className="text-subheading font-semibold">Note</h3>
 										<p className="text-caption text-muted-foreground">
-											{selectedSpot.description}
+											{selectedSpotCandidate.notes}
 										</p>
 									</div>
 									<div className="w-full mt-4">
@@ -168,29 +282,32 @@ export default function PendingSpotsPage() {
 													<GoogleMaps
 														spots={[
 															{
-																id: selectedSpot.id,
-																name: selectedSpot.name,
-																address: selectedSpot.raw_address,
-																lat: selectedSpot.lat,
-																lng: selectedSpot.lng,
-																description: selectedSpot.description,
+																id: selectedSpotCandidate.id,
+																name: selectedSpotCandidate.name,
+																address: selectedSpotCandidate.raw_address,
+																lat: selectedSpotCandidate.lat,
+																lng: selectedSpotCandidate.lng,
+																description: selectedSpotCandidate.notes,
 																rating: 0,
 																reviewCount: 0,
 																distance: "0 mi",
 																isVerified: false,
 																verificationStatus: "pending",
 																isFavorite: false,
-																imageUrl: selectedSpot.photo_url,
+																imageUrl:
+																	selectedSpotCandidate.photo_urls[0].url,
 																priceRange: "$$",
 																cuisine: ["Nigerian"],
 																openNow: true,
-																submittedBy: selectedSpot.submittedBy,
-																submittedDate: selectedSpot.submittedDate,
+																submittedBy:
+																	"selectedSpotCandidate.submittedBy",
+																submittedDate:
+																	"selectedSpotCandidate.submittedDate",
 															},
 														]}
 														center={{
-															lat: selectedSpot.lat,
-															lng: selectedSpot.lng,
+															lat: selectedSpotCandidate.lat,
+															lng: selectedSpotCandidate.lng,
 														}}
 														zoom={15}
 														onMarkerClick={() => {}}
@@ -206,13 +323,13 @@ export default function PendingSpotsPage() {
 									<div className="flex items-center space-x-2">
 										<Globe className="h-4 w-4 text-muted-foreground" />
 										<span className="font-medium text-foreground">
-											{selectedSpot.website}
+											{selectedSpotCandidate.website}
 										</span>
 									</div>
 									<div className="flex items-center space-x-2">
 										<Phone className="h-4 w-4 text-muted-foreground" />
 										<span className="font-medium text-foreground">
-											{selectedSpot.phone}
+											{selectedSpotCandidate.phone}
 										</span>
 									</div>
 									<div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
@@ -239,6 +356,10 @@ export default function PendingSpotsPage() {
 					</div>
 				</div>
 			</div>
+		</div>
+	) : (
+		<div className="min-h-screen min-w-screen bg-background flex items-center justify-center">
+			No unverified spot available
 		</div>
 	);
 }
