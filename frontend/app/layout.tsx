@@ -6,17 +6,19 @@ import { Suspense } from "react";
 import { Space_Grotesk } from "next/font/google";
 import { DM_Sans } from "next/font/google";
 import Provider from "./provider";
+import { AuthHeader } from "@/components/auth-header";
+import { AuthProvider } from "@/hooks/use-auth";
 
 const spaceGrotesk = Space_Grotesk({
-	subsets: ["latin"],
-	variable: "--font-space-grotesk",
-	display: "swap",
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  display: "swap",
 });
 
 const dmSans = DM_Sans({
-	subsets: ["latin"],
-	variable: "--font-dm-sans",
-	display: "swap",
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +27,15 @@ export const metadata: Metadata = {
     "Discover and verify authentic Amala restaurants and spots near you with our interactive map and community-driven platform.",
   applicationName: "Amala Atlas",
   referrer: "origin-when-cross-origin",
-  keywords: ["amala", "restaurants", "food", "locations", "map", "authentic", "nigerian food"],
+  keywords: [
+    "amala",
+    "restaurants",
+    "food",
+    "locations",
+    "map",
+    "authentic",
+    "nigerian food",
+  ],
   authors: [{ name: "Amala Atlas Team" }],
   creator: "Amala Atlas",
   publisher: "Amala Atlas",
@@ -67,62 +77,67 @@ export const metadata: Metadata = {
     title: "Amala Atlas",
   },
   manifest: "/manifest.json",
-}
+};
 
 export const viewport: Viewport = {
-	themeColor: [
-		{ media: "(prefers-color-scheme: light)", color: "#ffffff" },
-		{ media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-	],
-	width: "device-width",
-	initialScale: 1,
-	maximumScale: 1,
-	userScalable: false,
-	viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang="en">
-			<head>
-				<meta name="mobile-web-app-capable" content="yes" />
-				<meta name="apple-mobile-web-app-capable" content="yes" />
-				<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-				<meta name="apple-mobile-web-app-title" content="Amala Locations" />
-				<meta name="msapplication-TileColor" content="#2563eb" />
-				<meta name="msapplication-config" content="/browserconfig.xml" />
+  return (
+    <html lang="en">
+      <head>
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Amala Locations" />
+        <meta name="msapplication-TileColor" content="#2563eb" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
 
-				{/* Apple Touch Icons */}
-				<link
-					rel="apple-touch-icon"
-					sizes="180x180"
-					href="/apple-touch-icon.jpg"
-				/>
-				<link
-					rel="icon"
-					type="image/png"
-					sizes="32x32"
-					href="/favicon-32x32.jpg"
-				/>
-				<link
-					rel="icon"
-					type="image/png"
-					sizes="16x16"
-					href="/favicon-16x16.jpg"
-				/>
-				<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2563eb" />
-				<link rel="shortcut icon" href="/favicon.ico" />
-			</head>
-			<body className={`font-sans ${spaceGrotesk.variable} ${dmSans.variable}`}>
-				<Provider>
-					<Suspense fallback={null}>{children}</Suspense>
-					<Analytics />
-				</Provider>
-			</body>
-		</html>
-	);
+        {/* Apple Touch Icons */}
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.jpg"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.jpg"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.jpg"
+        />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2563eb" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </head>
+      <body className={`font-sans ${spaceGrotesk.variable} ${dmSans.variable}`}>
+        <Provider>
+          <Suspense fallback={null}>
+            <AuthProvider>
+              <AuthHeader />
+              {children}
+            </AuthProvider>
+          </Suspense>
+          <Analytics />
+        </Provider>
+      </body>
+    </html>
+  );
 }
