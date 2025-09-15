@@ -445,9 +445,15 @@ export default function AmalaSpotsList() {
                 Filter
               </Button>
               <Link href="/submit">
-                <Button className="h-11 px-4 bg-primary hover:bg-primary/90">
+                <Button variant="outline" className="h-11 px-4">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Spot
+                </Button>
+              </Link>
+              <Link href="/submit-agent">
+                <Button className="h-11 px-4 bg-primary hover:bg-primary/90">
+                  <Plus className="h-4 w-4 mr-2" />
+                  AI Submit
                 </Button>
               </Link>
             </div>
