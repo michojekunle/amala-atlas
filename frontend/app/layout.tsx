@@ -7,6 +7,8 @@ import { Space_Grotesk } from "next/font/google";
 import { DM_Sans } from "next/font/google";
 import Provider from "./provider";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthHeader } from "@/components/auth-header";
+import { AuthProvider } from "@/hooks/use-auth";
 
 const spaceGrotesk = Space_Grotesk({
 	subsets: ["latin"],
@@ -129,8 +131,11 @@ export default function RootLayout({
 			<body className={`font-sans ${spaceGrotesk.variable} ${dmSans.variable}`}>
 				<Provider>
 					<Suspense fallback={null}>
-						{children}
-						<Toaster />
+						<AuthProvider>
+							<AuthHeader />
+							{children}
+						</AuthProvider>
+						<Toaster position="top-right" richColors />
 					</Suspense>
 					<Analytics />
 				</Provider>
